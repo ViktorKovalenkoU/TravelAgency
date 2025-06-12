@@ -1,5 +1,7 @@
 package com.epam.finaltask.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -21,8 +23,10 @@ public class VoucherDTO {
 
     private String status;
 
-    private LocalDate arrivalDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private LocalDate arrivalDate;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate evictionDate;
 
     private UUID userId;
