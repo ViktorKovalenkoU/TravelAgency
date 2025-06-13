@@ -9,6 +9,6 @@ public interface AuthenticationService {
     AuthResponseDTO authenticate(AuthRequestDTO authRequestDTO);
 
     AuthResponseDTO refreshToken(RefreshRequestDTO refreshRequestDTO);
-
     void logout(String token);
+    boolean isTokenBlacklisted(String token);
 }

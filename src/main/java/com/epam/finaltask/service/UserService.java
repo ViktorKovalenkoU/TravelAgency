@@ -3,7 +3,6 @@ package com.epam.finaltask.service;
 import java.util.UUID;
 
 import com.epam.finaltask.dto.UserDTO;
-import org.springframework.stereotype.Service;
 
 public interface UserService {
     UserDTO register(UserDTO userDTO);
