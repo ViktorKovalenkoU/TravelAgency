@@ -1,22 +1,26 @@
 package com.epam.finaltask.model;
 
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.persistence.*;
-
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -24,9 +28,11 @@ public class User {
 
     private String phoneNumber;
 
+    @Column(precision = 10, scale = 2)
     private BigDecimal balance;
 
-    private boolean active;
+    @Column(nullable = false)
+    private boolean active = true;
 
     public UUID getId() {
         return id;
@@ -91,5 +97,4 @@ public class User {
     public void setActive(boolean active) {
         this.active = active;
     }
-
 }

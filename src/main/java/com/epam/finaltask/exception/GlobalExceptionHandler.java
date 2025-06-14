@@ -1,37 +1,27 @@
 package com.epam.finaltask.exception;
 
-import com.epam.finaltask.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(fe -> fe.getDefaultMessage())
-                .findFirst()
-                .orElse("Validation error");
-        ApiResponse<String> response = new ApiResponse<>("ERROR", errorMessage, null);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiResponse<String>> handleBadCredentialsException(BadCredentialsException ex) {
-        ApiResponse<String> response = new ApiResponse<>("ERROR", ex.getMessage(), null);
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleResourceNotFound(ResourceNotFoundException ex, Model model) {
+        model.addAttribute("errorMessage", ex.getMessage());
+        // Наприклад, перенаправляємо на окрему сторінку помилки
+        return "error/404";
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<String>> handleAllExceptions(Exception ex) {
-        ApiResponse<String> response = new ApiResponse<>("ERROR", "Internal Server Error", null);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleAllExceptions(Exception ex, Model model) {
+        model.addAttribute("errorMessage", "Internal Server Error: " + ex.getMessage());
+        return "error/500";
     }
 }

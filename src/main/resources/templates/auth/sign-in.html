@@ -2,29 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login Page</title>
-    <!-- Add Bootstrap CSS -->
+    <title th:text="#{sign.in.title}">Sign In</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-    <h2>Login</h2>
-    <!-- Update the form to include th:action, th:object, and method attributes -->
+    <h2 th:text="#{sign.in.header}">Sign In</h2>
     <form th:action="@{/auth/login}" th:object="${loginRequest}" method="post">
         <div class="form-group">
-            <label for="username">Username</label>
-            <!-- Update input to use th:field for binding -->
+            <label for="username" th:text="#{username.label}">Username</label>
             <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Enter username" required>
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <!-- Update input to use th:field for binding -->
-            <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password" required>
+            <label for="password" th:text="#{password.label}">Password</label>
+            <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Enter password" required>
         </div>
-        <!-- Change the link to a submit button -->
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary" th:text="#{button.submit}">Submit</button>
     </form>
+    <div class="mt-3">
+        <a th:href="@{/?lang=en}" class="btn btn-link">English</a>
+        <a th:href="@{/?lang=uk}" class="btn btn-link">Українська</a>
+    </div>
 </div>
 </body>
 </html>
-

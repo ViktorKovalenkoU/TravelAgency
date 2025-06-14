@@ -1,40 +1,54 @@
 package com.epam.finaltask.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import jakarta.persistence.*;
-
 @Entity
-@Table(name = "Vouchers")
+@Table(name = "vouchers")
 public class Voucher {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "VARCHAR(36)")
     private UUID id;
 
+    @Column(nullable = false)
     private String title;
 
     private String description;
 
+    @Column(nullable = false)
     private Double price;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TourType tourType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TransferType transferType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private HotelType hotelType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private VoucherStatus status;
 
+    @Column(nullable = false)
     private LocalDate arrivalDate;
 
+    @Column(nullable = false)
     private LocalDate evictionDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    private boolean isHot;
+    @Column(nullable = false)
+    private boolean isHot = false;
 
     public UUID getId() {
         return id;
