@@ -17,14 +17,12 @@ public class HomeController {
         return "sign-in";
     }
 
-    // Сторінка реєстрації
     @GetMapping("/auth/sign-up")
     public String signUp(Model model) {
         model.addAttribute("signUpRequest", new com.epam.finaltask.dto.UserDTO());
         return "sign-up";
     }
 
-    // Панель користувача (Dashboard)
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         return "dashboard";
