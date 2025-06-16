@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{error.500.title}">500</title>
@@ -9,8 +9,8 @@
     </style>
 </head>
 <body>
-<h1 th:text="#{error.500.title}">Внутрішня помилка сервера</h1>
-<p th:text="#{error.500.message}">Щось пішло не так.</p>
-<a href="/" th:text="#{error.default.backHome}">Повернутись на головну</a>
+<h1 th:text="#{error.500.title}">Internal Server Error</h1>
+<p th:text="#{error.500.message}">Something went wrong on the server.</p>
+<a href="/" th:text="#{error.default.backHome}">Back to Home</a>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.epam.finaltask.restcontroller;
 
 import com.epam.finaltask.dto.ApiResponse;
+import com.epam.finaltask.dto.SignUpRequestDTO;
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,10 @@ public class UserRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserDTO>> registerUser(@RequestBody @Validated UserDTO userDTO) {
-        UserDTO registeredUser = userService.register(userDTO);
+    public ResponseEntity<ApiResponse<UserDTO>> registerUser(
+            @RequestBody @Validated SignUpRequestDTO signUpRequest
+    ) {
+        UserDTO registeredUser = userService.register(signUpRequest);
         ApiResponse<UserDTO> response = new ApiResponse<>(
                 "OK",
                 "User registration successful",
@@ -29,6 +32,7 @@ public class UserRestController {
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
 
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserDTO>> getUserProfile(Authentication authentication) {

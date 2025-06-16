@@ -1,16 +1,18 @@
 package com.epam.finaltask.model;
 
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "VARCHAR(36)")
     private UUID id;
 
     @Column(nullable = false, unique = true)
@@ -19,14 +21,22 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Voucher> vouchers;
-
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Voucher> vouchers = new ArrayList<>();
 
     @Column(precision = 10, scale = 2)
     private BigDecimal balance;
@@ -60,6 +70,14 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setRole(Role role) {
@@ -96,5 +114,15 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public void addVoucher(Voucher v) {
+        vouchers.add(v);
+        v.setUser(this);
+    }
+
+    public void removeVoucher(Voucher v) {
+        vouchers.remove(v);
+        v.setUser(null);
     }
 }

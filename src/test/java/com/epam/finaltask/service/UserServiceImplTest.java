@@ -68,7 +68,7 @@ public class UserServiceImplTest {
     // Given
     String userId = UUID.randomUUID().toString();
     UserDTO userDTO = new UserDTO();
-    userDTO.setId(userId);
+    userDTO.setId(UUID.fromString(userId));
     userDTO.setActive(true);
 
     User user = new User();
@@ -104,7 +104,7 @@ public class UserServiceImplTest {
     user.setId(id);
 
     UserDTO expectedUserDTO = new UserDTO();
-    expectedUserDTO.setId(id.toString());
+    expectedUserDTO.setId(UUID.fromString(id.toString()));
 
     when(userRepository.findById(id)).thenReturn(Optional.of(user));
     when(userMapper.toUserDTO(any(User.class))).thenReturn(expectedUserDTO);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{error.403.title}">403</title>
@@ -9,8 +9,8 @@
     </style>
 </head>
 <body>
-<h1 th:text="#{error.403.title}">Доступ заборонено</h1>
-<p th:text="#{error.403.message}">У вас немає прав доступу.</p>
-<a href="/" th:text="#{error.default.backHome}">Повернутись на головну</a>
+<h1 th:text="#{error.403.title}">Access Denied</h1>
+<p th:text="#{error.403.message}">You do not have permission to access this page.</p>
+<a href="/" th:text="#{error.default.backHome}">Back to Home</a>
 </body>
 </html>
