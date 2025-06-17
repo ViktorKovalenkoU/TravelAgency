@@ -14,7 +14,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleResourceNotFound(ResourceNotFoundException ex, Model model) {
         model.addAttribute("errorMessage", ex.getMessage());
-        // Наприклад, перенаправляємо на окрему сторінку помилки
         return "error/404";
     }
 

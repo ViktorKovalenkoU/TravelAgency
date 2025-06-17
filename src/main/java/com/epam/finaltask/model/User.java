@@ -3,6 +3,7 @@ package com.epam.finaltask.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "VARCHAR(36)")
+    @Column(columnDefinition = "VARCHAR(36) DEFAULT random_uuid()")
     private UUID id;
 
     @Column(nullable = false, unique = true)
@@ -43,6 +44,10 @@ public class User {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    private int failedAttempts;
+    private LocalDateTime lockTime;
+
 
     public UUID getId() {
         return id;
@@ -124,5 +129,33 @@ public class User {
     public void removeVoucher(Voucher v) {
         vouchers.remove(v);
         v.setUser(null);
+    }
+
+    public int getFailedAttempts() {
+        return failedAttempts;
+    }
+
+    public void setFailedAttempts(int failedAttempts) {
+        this.failedAttempts = failedAttempts;
+    }
+
+    public LocalDateTime getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(LocalDateTime lockTime) {
+        this.lockTime = lockTime;
+    }
+
+    public boolean isAccountNonLocked() {
+        if (lockTime == null) {
+            return true;
+        }
+        if (LocalDateTime.now().isAfter(lockTime)) {
+            this.failedAttempts = 0;
+            this.lockTime = null;
+            return true;
+        }
+        return false;
     }
 }

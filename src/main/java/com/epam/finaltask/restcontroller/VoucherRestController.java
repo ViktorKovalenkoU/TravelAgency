@@ -2,10 +2,11 @@ package com.epam.finaltask.restcontroller;
 
 import com.epam.finaltask.dto.ApiResponse;
 import com.epam.finaltask.dto.VoucherDTO;
-import com.epam.finaltask.model.HotelType;
 import com.epam.finaltask.model.TourType;
 import com.epam.finaltask.model.TransferType;
+import com.epam.finaltask.model.HotelType;
 import com.epam.finaltask.service.VoucherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vouchers")
+@RequiredArgsConstructor
 public class VoucherRestController {
 
     private final VoucherService voucherService;
-
-    public VoucherRestController(VoucherService voucherService) {
-        this.voucherService = voucherService;
-    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<VoucherDTO>>> getAllVouchers() {

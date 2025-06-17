@@ -6,10 +6,6 @@ spring.datasource.url=jdbc:://localhost:5432/travel_agency
 spring.datasource.username=${Database_Username}
 spring.datasource.password=${Database_Password}
 
-
-
-
-
 # Hibernate properties
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.hibernate.ddl-auto=update

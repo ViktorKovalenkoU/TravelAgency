@@ -1,37 +1,29 @@
 package com.epam.finaltask.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
 public class VoucherDTO {
 
-    private String id;
-
-    private String title;
-
-    private String description;
-
-    private Double price;
-
-    private String tourType;
-
-    private String transferType;
-
-    private String hotelType;
-
-    private String status;
+	private String id;
+	private String title;
+	private String description;
+	private Double price;
+	private String tourType;
+	private String transferType;
+	private String hotelType;
+	private String status;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate arrivalDate;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate evictionDate;
+	private LocalDate evictionDate;
 
-    private UUID userId;
+	private UUID userId;
 
-    private Boolean isHot;
+	private boolean isHot;
 
 	public String getId() {
 		return id;
@@ -121,12 +113,11 @@ public class VoucherDTO {
 		this.userId = userId;
 	}
 
-	public Boolean getIsHot() {
+	public boolean isHot() {
 		return isHot;
 	}
 
-	public void setIsHot(Boolean isHot) {
+	public void setIsHot(boolean isHot) {
 		this.isHot = isHot;
 	}
-    
 }

@@ -1,43 +1,45 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security6"
+      lang="en">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{dashboard.title}">Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:text="#{dashboard.nav.brand}">Dashboard</a>
-        <div class="ms-auto">
-            <a th:href="@{/?lang=en}" class="btn btn-sm btn-outline-secondary">English</a>
-            <a th:href="@{/?lang=uk}" class="btn btn-sm btn-outline-secondary">Українська</a>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}" th:text="#{dashboard.nav.brand}">Dashboard</a>
+        <div class="ms-auto d-flex gap-2">
+            <a class="btn btn-outline-secondary" th:href="@{/profile}" th:text="#{button.profile}">My Profile</a>
+            <form th:action="@{/auth/logout}" method="post">
+                <button class="btn btn-outline-danger" type="submit" th:text="#{button.logout}">Logout</button>
+            </form>
         </div>
     </div>
 </nav>
 
-<div class="container mt-4">
-    <h1 th:text="#{dashboard.header}">Dashboard</h1>
-    <table class="table table-bordered">
-        <thead>
+<div class="container mt-5">
+    <h1 th:text="#{dashboard.header}">Available Vouchers</h1>
+    <table class="table table-bordered mt-4">
+        <thead class="table-light">
         <tr>
-            <th scope="col" th:text="#{voucher.table.id}">#ID</th>
-            <th scope="col" th:text="#{voucher.table.title}">Voucher Title</th>
-            <th scope="col" th:text="#{voucher.table.description}">Description</th>
-            <th scope="col" th:text="#{voucher.table.action}">Action</th>
+            <th th:text="#{voucher.table.id}">ID</th>
+            <th th:text="#{voucher.table.title}">Title</th>
+            <th th:text="#{voucher.table.description}">Description</th>
+            <th th:text="#{voucher.table.action}">Action</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="voucher : ${vouchers}">
-            <td th:text="${voucher.id}">ID</td>
-            <td th:text="${voucher.title}">Title</td>
-            <td th:text="${voucher.description}">Description</td>
+            <td th:text="${voucher.id}">1</td>
+            <td th:text="${voucher.title}">Sample Voucher</td>
+            <td th:text="${voucher.description}">Voucher description here</td>
             <td>
-                <a th:href="@{/vouchers/order(voucherId=${voucher.id})}"
-                   class="btn btn-outline-success"
-                   th:text="#{button.order}">
-                    Order
-                </a>
+                <a class="btn btn-success" th:href="@{/vouchers/order(voucherId=${voucher.id})}" th:text="#{button.order}">Order</a>
             </td>
         </tr>
         </tbody>

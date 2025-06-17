@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{profile.title}">My Profile</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<!-- Можна вставити спільний header або nav fragment -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}" th:text="#{dashboard.nav.brand}">Dashboard</a>
+        <div class="ms-auto d-flex gap-2">
+            <a class="btn btn-outline-secondary" th:href="@{/profile}" th:text="#{button.profile}">My Profile</a>
+            <form th:action="@{/auth/logout}" method="post">
+                <button class="btn btn-outline-danger" type="submit" th:text="#{button.logout}">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 th:text="#{profile.header}">My Profile</h2>
+    <table class="table table-bordered w-50">
+        <tr>
+            <th th:text="#{profile.table.username}">Username</th>
+            <td th:text="${user.username}">sampleUser</td>
+        </tr>
+        <tr>
+            <th th:text="#{profile.table.email}">Email</th>
+            <td th:text="${user.email}">user@example.com</td>
+        </tr>
+        <tr>
+            <th th:text="#{profile.table.phone}">Phone</th>
+            <td th:text="${user.phoneNumber}">123456789</td>
+        </tr>
+        <tr>
+            <th th:text="#{profile.table.role}">Role</th>
+            <td th:text="${user.role}">USER</td>
+        </tr>
+        <tr>
+            <th th:text="#{profile.table.balance}">Balance</th>
+            <td th:text="${user.balance}">1000.00</td>
+        </tr>
+    </table>
+
+    <!-- Приклад таблиці замовлень, якщо інтегровано історію замовлень -->
+    <h3 th:text="#{profile.orders.header}">My Orders</h3>
+    <table class="table table-bordered">
+        <thead class="table-light">
+        <tr>
+            <th th:text="#{profile.orders.id}">Order ID</th>
+            <th th:text="#{profile.orders.voucherTitle}">Voucher</th>
+            <th th:text="#{profile.orders.date}">Date</th>
+            <th th:text="#{profile.orders.status}">Status</th>
+            <th th:text="#{profile.orders.total}">Total Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id}">O123</td>
+            <td th:text="${order.voucherTitle}">Adventure Package</td>
+            <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd HH:mm:ss')}">2025-06-16 14:30:00</td>
+            <td th:text="${order.orderStatus}">CONFIRMED</td>
+            <td th:text="${order.totalPrice}">299.99</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
