@@ -64,9 +64,7 @@
                     <p class="card-text" th:text="#{voucher.sample.description}">
                         Experience thrilling adventures and outdoor activities.
                     </p>
-                    <!-- Якщо користувач не авторизований, кнопка веде до входу -->
                     <a class="btn btn-success" sec:authorize="!isAuthenticated()" th:href="@{/auth/sign-in}" th:text="#{button.order}">Order</a>
-                    <!-- Якщо користувач авторизований, кнопка веде до оформлення замовлення. Використано простий вираз для параметра -->
                     <a class="btn btn-success" sec:authorize="isAuthenticated()"
                        th:href="@{'/vouchers/order?voucherId=' + ${'b91d3f64-d3b4-4e4b-aaaa-bee24c63a346'}}"
                        th:text="#{button.order}">Order</a>
