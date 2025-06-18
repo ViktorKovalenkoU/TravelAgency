@@ -20,6 +20,7 @@ public class VoucherOrderRestController {
     public ResponseEntity<ApiResponse<VoucherOrderDTO>> orderVoucher(
             @PathVariable("voucherId") String voucherId,
             @RequestParam String userId) {
+
         VoucherOrder order = voucherOrderService.orderVoucher(voucherId, userId);
 
         VoucherOrderDTO dto = new VoucherOrderDTO();

@@ -1,16 +1,23 @@
 package com.epam.finaltask.dto;
 
+import lombok.Data;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
 @Data
 public class SignUpRequestDTO {
 
     @NotEmpty(message = "{username.required}")
     private String username;
+
+    @NotEmpty(message = "{firstName.required}")
+    private String firstName;
+
+    @NotEmpty(message = "{lastName.required}")
+    private String lastName;
 
     @NotEmpty(message = "{password.required}")
     @Size(min = 6, message = "{password.size}")

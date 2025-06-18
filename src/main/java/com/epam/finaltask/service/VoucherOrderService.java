@@ -1,15 +1,13 @@
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.exception.ResourceNotFoundException;
-import com.epam.finaltask.model.OrderStatus;
-import com.epam.finaltask.model.User;
-import com.epam.finaltask.model.Voucher;
-import com.epam.finaltask.model.VoucherOrder;
-import com.epam.finaltask.model.VoucherStatus;
+import com.epam.finaltask.model.*;
 import com.epam.finaltask.repository.UserRepository;
 import com.epam.finaltask.repository.VoucherOrderRepository;
 import com.epam.finaltask.repository.VoucherRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -19,27 +17,37 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VoucherOrderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(VoucherOrderService.class);
+
     private final VoucherRepository voucherRepository;
     private final VoucherOrderRepository voucherOrderRepository;
     private final UserRepository userRepository;
 
     @Transactional
     public VoucherOrder orderVoucher(String voucherId, String userId) {
+        logger.info("Початок оформлення замовлення для ваучера {} користувачем {}", voucherId, userId);
+
         Voucher voucher = voucherRepository.findById(UUID.fromString(voucherId))
-                .orElseThrow(() -> new ResourceNotFoundException("Voucher not found with id: " + voucherId));
+                .orElseThrow(() -> {
+                    logger.error("Ваучер з id {} не знайдено", voucherId);
+                    return new ResourceNotFoundException("Voucher not found with id: " + voucherId);
+                });
 
-        if (!VoucherStatus.REGISTERED.name().equals(voucher.getStatus())) {
-            throw new IllegalArgumentException("Voucher is not available for order");
-        }
-
-        if (voucher.getEvictionDate().isBefore(LocalDateTime.now().toLocalDate())) {
-            throw new IllegalArgumentException("Voucher has expired");
+        // Перевірка доступності за датою прибуття:
+        if (!voucher.isAvailableForPurchase()) {
+            logger.error("Ваучер {} більше не доступний для покупки: термін реєстрації завершився", voucherId);
+            throw new IllegalArgumentException("Registration period for this voucher has ended");
         }
 
         User user = userRepository.findUserByUsername(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
-        voucher.setStatus(VoucherStatus.valueOf(VoucherStatus.PAID.name()));
+                .orElseThrow(() -> {
+                    logger.error("Користувача {} не знайдено", userId);
+                    return new ResourceNotFoundException("User not found: " + userId);
+                });
+
+        voucher.setStatus(VoucherStatus.PAID);
         voucherRepository.save(voucher);
+        logger.info("Оновлено статус ваучера {} на PAID", voucherId);
 
         VoucherOrder order = new VoucherOrder();
         order.setUser(user);
@@ -48,6 +56,8 @@ public class VoucherOrderService {
         order.setOrderStatus(OrderStatus.CREATED);
         order.setTotalPrice(voucher.getPrice());
 
-        return voucherOrderRepository.save(order);
+        VoucherOrder savedOrder = voucherOrderRepository.save(order);
+        logger.info("Замовлення створено: id {}", savedOrder.getId());
+        return savedOrder;
     }
 }

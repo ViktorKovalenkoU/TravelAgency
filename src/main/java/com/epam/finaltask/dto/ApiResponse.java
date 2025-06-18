@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ApiResponse<T> {
+
     private String statusCode;
+
     private String statusMessage;
+
     private T results;
 }

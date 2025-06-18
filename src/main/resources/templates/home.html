@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security6"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{home.title}">Travel Agency</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        thead {
+            background-color: transparent !important;
+        }
+        thead th {
+            color: inherit;
+        }
+    </style>
 </head>
 <body>
 
@@ -29,14 +37,20 @@
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form th:action="@{/auth/logout}" method="post" class="d-inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-outline-danger me-3" th:text="#{button.logout}">Logout</button>
                     </form>
                 </li>
                 <li class="nav-item dropdown">
-                    <button class="btn btn-outline-info dropdown-toggle" id="langDropdown" data-bs-toggle="dropdown" th:text="#{button.language}">Language</button>
+                    <button class="btn btn-outline-info dropdown-toggle" id="langDropdown" data-bs-toggle="dropdown"
+                            th:text="#{button.language}">Language</button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
-                        <li><a class="dropdown-item" th:href="@{/(lang='en')}" th:text="#{button.lang.en}">EN</a></li>
-                        <li><a class="dropdown-item" th:href="@{/(lang='uk')}" th:text="#{button.lang.uk}">UK</a></li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/(lang='en')}" th:text="#{button.lang.en}">EN</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/(lang='uk')}" th:text="#{button.lang.uk}">UK</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -50,27 +64,120 @@
         <p class="lead mb-4" th:text="#{home.description}">
             Explore incredible journeys and start your adventure today.
         </p>
-        <a class="btn btn-primary btn-lg me-2" sec:authorize="!isAuthenticated()" th:href="@{/auth/sign-up}" th:text="#{button.getStarted}">Get Started</a>
-        <a class="btn btn-outline-secondary btn-lg" sec:authorize="isAuthenticated()" th:href="@{/profile}" th:text="#{button.viewProfile}">View Profile</a>
+        <a class="btn btn-outline-secondary btn-lg" sec:authorize="isAuthenticated()"
+           th:href="@{/profile}" th:text="#{button.viewProfile}">View Profile</a>
     </div>
 </header>
 
+<div class="container mb-4">
+    <h2 class="mb-3" th:text="#{voucher.filter.header}">Filter Vouchers</h2>
+    <form action="/" method="get" class="row gy-2 gx-3 align-items-end">
+        <div class="col-md-3">
+            <label for="tourType" class="form-label" th:text="#{voucher.filter.tourType}">Tour Type</label>
+            <select class="form-control" id="tourType" name="tourType">
+                <option value="" th:text="#{voucher.filter.all}">All</option>
+                <option value="HEALTH" th:text="#{tourType.HEALTH}">Health</option>
+                <option value="SPORTS" th:text="#{tourType.SPORTS}">Sports</option>
+                <option value="LEISURE" th:text="#{tourType.LEISURE}">Leisure</option>
+                <option value="SAFARI" th:text="#{tourType.SAFARI}">Safari</option>
+                <option value="WINE" th:text="#{tourType.WINE}">Wine</option>
+                <option value="ECO" th:text="#{tourType.ECO}">Eco</option>
+                <option value="ADVENTURE" th:text="#{tourType.ADVENTURE}">Adventure</option>
+                <option value="CULTURAL" th:text="#{tourType.CULTURAL}">Cultural</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="transferType" class="form-label" th:text="#{voucher.filter.transferType}">Transfer Type</label>
+            <select class="form-control" id="transferType" name="transferType">
+                <option value="" th:text="#{voucher.filter.all}">All</option>
+                <option value="BUS" th:text="#{transferType.BUS}">Bus</option>
+                <option value="TRAIN" th:text="#{transferType.TRAIN}">Train</option>
+                <option value="PLANE" th:text="#{transferType.PLANE}">Plane</option>
+                <option value="SHIP" th:text="#{transferType.SHIP}">Ship</option>
+                <option value="PRIVATE_CAR" th:text="#{transferType.PRIVATE_CAR}">Private Car</option>
+                <option value="JEEPS" th:text="#{transferType.JEEPS}">Jeep</option>
+                <option value="MINIBUS" th:text="#{transferType.MINIBUS}">Minibus</option>
+                <option value="ELECTRICAL_CARS" th:text="#{transferType.ELECTRICAL_CARS}">Electrical Cars</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="price" class="form-label" th:text="#{voucher.filter.price}">Price ($)</label>
+            <input type="number" id="price" name="price" class="form-control" th:placeholder="#{voucher.filter.price}">
+        </div>
+        <div class="col-md-3">
+            <label for="hotelType" class="form-label" th:text="#{voucher.filter.hotelType}">Hotel Type</label>
+            <select class="form-control" id="hotelType" name="hotelType">
+                <option value="" th:text="#{voucher.filter.all}">All</option>
+                <option value="ONE_STAR" th:text="#{hotelType.ONE_STAR}">One Star</option>
+                <option value="TWO_STARS" th:text="#{hotelType.TWO_STARS}">Two Stars</option>
+                <option value="THREE_STARS" th:text="#{hotelType.THREE_STARS}">Three Stars</option>
+                <option value="FOUR_STARS" th:text="#{hotelType.FOUR_STARS}">Four Stars</option>
+                <option value="FIVE_STARS" th:text="#{hotelType.FIVE_STARS}">Five Stars</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary" th:text="#{voucher.filter.button}">Filter</button>
+        </div>
+    </form>
+</div>
+
 <div class="container mb-5">
-    <div class="row">
-        <div class="col-md-4">
+    <h2 class="text-center mb-4" th:text="#{voucher.catalog.header}">Available Vouchers</h2>
+    <div class="row" th:if="${vouchers != null and !#lists.isEmpty(vouchers)}">
+        <div class="col-md-4 mb-4" th:each="voucher : ${vouchers}">
             <div class="card mb-4 shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title" th:text="#{voucher.sample.title}">Adventure Package</h5>
-                    <p class="card-text" th:text="#{voucher.sample.description}">
-                        Experience thrilling adventures and outdoor activities.
+                    <h5 class="card-title">
+                        <span th:text="${voucher.title}">Voucher Title</span>
+                        <span th:if="${voucher.hot}" class="badge bg-danger ms-2" th:text="#{voucher.hot.badge}">HOT</span>
+                    </h5>
+                    <p class="card-text" th:text="${voucher.description}">Brief description...</p>
+                    <p class="card-text">
+                        <strong th:text="${#numbers.formatDecimal(voucher.price, 1, 'POINT', 2, 'COMMA')}">0.00</strong> USD
                     </p>
-                    <a class="btn btn-success" sec:authorize="!isAuthenticated()" th:href="@{/auth/sign-in}" th:text="#{button.order}">Order</a>
-                    <a class="btn btn-success" sec:authorize="isAuthenticated()"
-                       th:href="@{'/vouchers/order?voucherId=' + ${'b91d3f64-d3b4-4e4b-aaaa-bee24c63a346'}}"
-                       th:text="#{button.order}">Order</a>
+                    <p class="card-text">
+                        <strong th:text="#{voucher.arrival}">Arrival:</strong>
+                        <span th:text="${#temporals.format(voucher.arrivalDate, 'dd.MM.yyyy')}">01.07.2025</span><br/>
+                        <strong th:text="#{voucher.eviction}">Eviction:</strong>
+                        <span th:text="${#temporals.format(voucher.evictionDate, 'dd.MM.yyyy')}">07.07.2025</span>
+                    </p>
+                    <div th:with="
+                        hotelKey='hotelType.' + ${voucher.hotelType},
+                        transferKey='transferType.' + ${voucher.transferType},
+                        tourKey='tourType.' + ${voucher.tourType}">
+                        <p class="card-text">
+                            <small th:text="#{voucher.label.hotel} + ' ' + #{${hotelKey}}">Hotel: ONE_STAR</small><br/>
+                            <small th:text="#{voucher.label.transfer} + ' ' + #{${transferKey}}">Transfer: BUS</small><br/>
+                            <small th:text="#{voucher.label.tour} + ' ' + #{${tourKey}}">Tour: ADVENTURE</small>
+                        </p>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{'/voucher/details/' + ${voucher.id}}"
+                           class="btn btn-outline-secondary btn-sm" th:text="#{button.view}">Review</a>
+                        <a class="btn btn-success btn-sm" sec:authorize="!isAuthenticated()"
+                           th:href="@{/auth/sign-in}" th:text="#{button.order}">Order</a>
+                        <div sec:authorize="isAuthenticated()">
+                            <div th:if="${voucher.available}">
+                                <form th:action="@{/vouchers/order}" method="post">
+                                    <input type="hidden" name="voucherId" th:value="${voucher.id}" />
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" class="btn btn-success btn-sm" th:text="#{button.order}">Order</button>
+                                </form>
+                            </div>
+                            <div th:if="${!voucher.available}">
+                                <button type="button" class="btn btn-secondary btn-sm" disabled th:text="#{button.notAvailable}">Not Available</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+    <div th:if="${vouchers == null or #lists.isEmpty(vouchers)}">
+        <p class="text-center" th:text="#{voucher.catalog.empty}">No vouchers available at the moment.</p>
     </div>
 </div>
 

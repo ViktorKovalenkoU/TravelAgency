@@ -1,123 +1,38 @@
 package com.epam.finaltask.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Data
 public class VoucherDTO {
 
-	private String id;
-	private String title;
-	private String description;
-	private Double price;
-	private String tourType;
-	private String transferType;
-	private String hotelType;
-	private String status;
+    private String id;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private LocalDate arrivalDate;
+    private String title;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private LocalDate evictionDate;
+    private String description;
 
-	private UUID userId;
+    private Double price;
 
-	private boolean isHot;
+    private String tourType;
 
-	public String getId() {
-		return id;
-	}
+    private String transferType;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    private String hotelType;
 
-	public String getTitle() {
-		return title;
-	}
+    private String status;
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    private boolean available;
 
-	public String getDescription() {
-		return description;
-	}
+    private LocalDate arrivalDate;
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    private LocalDate evictionDate;
 
-	public Double getPrice() {
-		return price;
-	}
+    private boolean availableForPurchase;
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+    private UUID userId;
 
-	public String getTourType() {
-		return tourType;
-	}
-
-	public void setTourType(String tourType) {
-		this.tourType = tourType;
-	}
-
-	public String getTransferType() {
-		return transferType;
-	}
-
-	public void setTransferType(String transferType) {
-		this.transferType = transferType;
-	}
-
-	public String getHotelType() {
-		return hotelType;
-	}
-
-	public void setHotelType(String hotelType) {
-		this.hotelType = hotelType;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public LocalDate getArrivalDate() {
-		return arrivalDate;
-	}
-
-	public void setArrivalDate(LocalDate arrivalDate) {
-		this.arrivalDate = arrivalDate;
-	}
-
-	public LocalDate getEvictionDate() {
-		return evictionDate;
-	}
-
-	public void setEvictionDate(LocalDate evictionDate) {
-		this.evictionDate = evictionDate;
-	}
-
-	public UUID getUserId() {
-		return userId;
-	}
-
-	public void setUserId(UUID userId) {
-		this.userId = userId;
-	}
-
-	public boolean isHot() {
-		return isHot;
-	}
-
-	public void setIsHot(boolean isHot) {
-		this.isHot = isHot;
-	}
+    private boolean isHot;
 }

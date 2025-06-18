@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO register(SignUpRequestDTO dto) {
         log.debug("UserService.register() called with username='{}'", dto.getUsername());
+
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             throw new IllegalArgumentException("Passwords do not match");
         }
@@ -43,12 +46,19 @@ public class UserServiceImpl implements UserService {
             throw new ResourceAlreadyExistsException("Phone number already taken");
         }
 
+        // Мапимо DTO до сутності (але userMapper може не відображати поля для імені та прізвища)
         User user = userMapper.toUser(dto);
+        // Додатково встановлюємо поля name та surname з відповідних полів DTO
+        user.setName(dto.getFirstName());
+        user.setSurname(dto.getLastName());
+
+        user.setBalance(BigDecimal.ZERO);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setPhoneNumber(dto.getPhoneNumber());
 
         User saved = userRepository.save(user);
         log.debug("Saved user {} with phone {}", saved.getUsername(), saved.getPhoneNumber());
+
         return userMapper.toUserDTO(saved);
     }
 
@@ -117,5 +127,13 @@ public class UserServiceImpl implements UserService {
     public boolean isUserLocked(String username) {
         Optional<User> optionalUser = userRepository.findUserByUsername(username);
         return optionalUser.map(user -> !user.isAccountNonLocked()).orElse(false);
+    }
+
+    @Override
+    public void topUpBalance(String username, double amount) {
+        User user = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+        user.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
+        userRepository.save(user);
     }
 }

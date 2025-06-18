@@ -6,14 +6,23 @@ import java.util.UUID;
 
 @Data
 public class UserDTO {
+
 	private UUID id;
+
 	private String username;
+
 	private String name;
+
 	private String surname;
+
 	private String email;
+
 	private String role;
+
 	private String phoneNumber;
+
 	private BigDecimal balance;
+
 	private boolean active;
 }
 

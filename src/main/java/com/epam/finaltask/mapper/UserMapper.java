@@ -10,18 +10,20 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", imports = Role.class)
 public interface UserMapper {
 
-    @Mapping(target = "id",       ignore = true)
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "vouchers", ignore = true)
-    @Mapping(target = "role",     expression = "java(Role.valueOf(dto.getRole()))")
+    @Mapping(target = "role", expression = "java(Role.valueOf(dto.getRole()))")
+    @Mapping(target = "name", source = "firstName")
+    @Mapping(target = "surname", source = "lastName")
     User toUser(SignUpRequestDTO dto);
 
     @Mapping(target = "role", expression = "java(user.getRole().name())")
     UserDTO toUserDTO(User user);
 
-    @Mapping(target = "id",       ignore = true)
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "vouchers", ignore = true)
-    @Mapping(target = "role",     expression = "java(Role.valueOf(dto.getRole()))")
+    @Mapping(target = "role", expression = "java(Role.valueOf(dto.getRole()))")
     User toUser(UserDTO dto);
 }

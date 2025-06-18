@@ -9,9 +9,14 @@ import java.math.BigDecimal;
 
 @Data
 public class VoucherFilterRequest {
+
     private TourType tourType;
+
     private HotelType hotelType;
+
     private TransferType transferType;
+
     private BigDecimal minPrice;
+
     private BigDecimal maxPrice;
 }

@@ -21,8 +21,9 @@ public class VoucherRestController {
     private final VoucherService voucherService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<VoucherDTO>>> getAllVouchers() {
-        List<VoucherDTO> vouchers = voucherService.findAll();
+    public ResponseEntity<ApiResponse<List<VoucherDTO>>> getAllVouchers(
+            @RequestHeader(name = "Accept-Language", defaultValue = "en") String locale) {
+        List<VoucherDTO> vouchers = voucherService.findAll(locale);
         ApiResponse<List<VoucherDTO>> response = new ApiResponse<>(
                 "OK",
                 "Vouchers retrieved successfully",
@@ -30,6 +31,7 @@ public class VoucherRestController {
         );
         return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<VoucherDTO>>> getVouchersByUserId(@PathVariable("userId") String userId) {
