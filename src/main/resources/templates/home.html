@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="#{home.title}">Travel Agency</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
     <style>
         thead {
             background-color: transparent !important;
@@ -14,6 +14,8 @@
         thead th {
             color: inherit;
         }
+
+
     </style>
 </head>
 <body>
@@ -27,23 +29,27 @@
         <div class="collapse navbar-collapse" id="navbarHome">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-outline-primary me-2" th:href="@{/auth/sign-in}" th:text="#{button.signin}">Sign In</a>
+                    <a class="btn btn-outline-primary me-2" th:href="@{/auth/sign-in}" th:text="#{button.signin}">Sign
+                        In</a>
                 </li>
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a class="btn btn-primary me-3" th:href="@{/auth/sign-up}" th:text="#{button.signup}">Sign Up</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="btn btn-outline-secondary me-2" th:href="@{/profile}" th:text="#{button.profile}">My Profile</a>
+                    <a class="btn btn-outline-secondary me-2" th:href="@{/profile}" th:text="#{button.profile}">My
+                        Profile</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form th:action="@{/auth/logout}" method="post" class="d-inline">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                        <button type="submit" class="btn btn-outline-danger me-3" th:text="#{button.logout}">Logout</button>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn btn-outline-danger me-3" th:text="#{button.logout}">Logout
+                        </button>
                     </form>
                 </li>
                 <li class="nav-item dropdown">
                     <button class="btn btn-outline-info dropdown-toggle" id="langDropdown" data-bs-toggle="dropdown"
-                            th:text="#{button.language}">Language</button>
+                            th:text="#{button.language}">Language
+                    </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
                         <li>
                             <a class="dropdown-item" th:href="@{/(lang='en')}" th:text="#{button.lang.en}">EN</a>
@@ -87,7 +93,8 @@
                 <option value="" th:text="#{voucher.filter.all}">All</option>
                 <option th:each="t : ${T(com.epam.finaltask.model.TourType).values()}"
                         th:value="${t}"
-                        th:text="#{tourType.${t}}">Health</option>
+                        th:text="#{tourType.${t}}">Health
+                </option>
             </select>
         </div>
 
@@ -101,7 +108,8 @@
                 <option value="" th:text="#{voucher.filter.all}">All</option>
                 <option th:each="tr : ${T(com.epam.finaltask.model.TransferType).values()}"
                         th:value="${tr}"
-                        th:text="#{transferType.${tr}}">Bus</option>
+                        th:text="#{transferType.${tr}}">Bus
+                </option>
             </select>
         </div>
 
@@ -115,10 +123,11 @@
                 <option value="" th:text="#{voucher.filter.all}">All</option>
                 <option th:each="h : ${T(com.epam.finaltask.model.HotelType).values()}"
                         th:value="${h}"
-                        th:text="#{hotelType.${h}}">One Star</option>
+                        th:text="#{hotelType.${h}}">One Star
+                </option>
             </select>
         </div>
-        
+
         <!-- Min Price -->
         <div class="col-md-2">
             <label for="minPrice" class="form-label"
@@ -141,58 +150,95 @@
 
         <div class="col-md-1">
             <button type="submit" class="btn btn-primary"
-                    th:text="#{voucher.filter.button}">Filter</button>
+                    th:text="#{voucher.filter.button}">Filter
+            </button>
         </div>
     </form>
 </div>
 
 <div class="container mb-5">
-    <h2 class="text-center mb-4" th:text="#{voucher.catalog.header}">Available Vouchers</h2>
-    <div class="row" th:if="${vouchers != null and !#lists.isEmpty(vouchers)}">
-        <div class="col-md-4 mb-4" th:each="voucher : ${vouchers}">
-            <div class="card mb-4 shadow-sm">
+    <h2 class="text-center mb-4" th:text="#{voucher.catalog.header}">
+        Available Vouchers
+    </h2>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4 align-items-start"
+         th:if="${vouchers != null and !#lists.isEmpty(vouchers)}">
+
+        <div class="col" th:each="voucher : ${vouchers}">
+            <div class="card expandable-card shadow-sm"
+                 th:id="'card-' + ${voucher.id}">
+
                 <div class="card-body">
                     <h5 class="card-title">
                         <span th:text="${voucher.title}">Voucher Title</span>
-                        <span th:if="${voucher.hot}" class="badge bg-danger ms-2" th:text="#{voucher.hot.badge}">HOT</span>
+                        <span th:if="${voucher.hot}"
+                              class="badge bg-danger ms-2"
+                              th:text="#{voucher.hot.badge}">HOT</span>
                     </h5>
-                    <p class="card-text" th:text="${voucher.description}">Brief description...</p>
+                    <p class="card-text"
+                       th:text="${voucher.description}">Brief description...</p>
                     <p class="card-text">
-                        <strong th:text="${#numbers.formatDecimal(voucher.price, 1, 'POINT', 2, 'COMMA')}">0.00</strong> USD
+                        <strong th:text="${#numbers.formatDecimal(voucher.price,1,'POINT',2,'COMMA')}">
+                            0.00
+                        </strong> USD
                     </p>
-                    <p class="card-text">
-                        <strong th:text="#{voucher.arrival}">Arrival:</strong>
-                        <span th:text="${#temporals.format(voucher.arrivalDate, 'dd.MM.yyyy')}">01.07.2025</span><br/>
-                        <strong th:text="#{voucher.eviction}">Eviction:</strong>
-                        <span th:text="${#temporals.format(voucher.evictionDate, 'dd.MM.yyyy')}">07.07.2025</span>
-                    </p>
-                    <div th:with="
-                        hotelKey='hotelType.' + ${voucher.hotelType},
-                        transferKey='transferType.' + ${voucher.transferType},
-                        tourKey='tourType.' + ${voucher.tourType}">
-                        <p class="card-text">
-                            <small th:text="#{voucher.label.hotel} + ' ' + #{${hotelKey}}">Hotel: ONE_STAR</small><br/>
-                            <small th:text="#{voucher.label.transfer} + ' ' + #{${transferKey}}">Transfer: BUS</small><br/>
-                            <small th:text="#{voucher.label.tour} + ' ' + #{${tourKey}}">Tour: ADVENTURE</small>
-                        </p>
+
+                    <div class="collapse mt-3"
+                         th:attr="id=|collapse-${voucher.id}|">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4" th:text="#{voucher.arrival}">Arrival:</dt>
+                            <dd class="col-sm-8"
+                                th:text="${#temporals.format(voucher.arrivalDate,'dd.MM.yyyy')}">
+                                01.07.2025
+                            </dd>
+
+                            <dt class="col-sm-4" th:text="#{voucher.eviction}">Eviction:</dt>
+                            <dd class="col-sm-8"
+                                th:text="${#temporals.format(voucher.evictionDate,'dd.MM.yyyy')}">
+                                07.07.2025
+                            </dd>
+
+                        </dl>
                     </div>
                 </div>
+
                 <div class="card-footer bg-transparent border-top-0">
-                    <div class="d-flex justify-content-between">
-                        <a th:href="@{'/voucher/details/' + ${voucher.id}}"
-                           class="btn btn-outline-secondary btn-sm" th:text="#{button.view}">Review</a>
-                        <a class="btn btn-success btn-sm" sec:authorize="!isAuthenticated()"
-                           th:href="@{/auth/sign-in}" th:text="#{button.order}">Order</a>
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm btn-review"
+                                data-bs-toggle="collapse"
+                                th:attr="data-bs-target=|#collapse-${voucher.id}|"
+                                th:attrappend="aria-controls=|collapse-${voucher.id}|"
+                                aria-expanded="false"
+                                th:text="#{button.view}">
+                            Review
+                        </button>
+
+                        <a class="btn btn-success btn-sm"
+                           sec:authorize="!isAuthenticated()"
+                           th:href="@{/auth/sign-in}"
+                           th:text="#{button.order}">Order</a>
+
                         <div sec:authorize="isAuthenticated()">
                             <div th:if="${voucher.available}">
-                                <form th:action="@{/vouchers/order}" method="post">
-                                    <input type="hidden" name="voucherId" th:value="${voucher.id}" />
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                    <button type="submit" class="btn btn-success btn-sm" th:text="#{button.order}">Order</button>
+                                <form th:action="@{/vouchers/order}" method="post" class="d-inline">
+                                    <input type="hidden" name="voucherId" th:value="${voucher.id}"/>
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}"/>
+                                    <button type="submit"
+                                            class="btn btn-success btn-sm"
+                                            th:text="#{button.order}">Order
+                                    </button>
                                 </form>
                             </div>
                             <div th:if="${!voucher.available}">
-                                <button type="button" class="btn btn-secondary btn-sm" disabled th:text="#{button.notAvailable}">Not Available</button>
+                                <button type="button"
+                                        class="btn btn-secondary btn-sm"
+                                        disabled
+                                        th:text="#{button.notAvailable}">Not Available
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -200,12 +246,35 @@
             </div>
         </div>
     </div>
-</div>
-    <div th:if="${vouchers == null or #lists.isEmpty(vouchers)}">
-        <p class="text-center" th:text="#{voucher.catalog.empty}">No vouchers available at the moment.</p>
+    <div th:if="${vouchers == null or #lists.isEmpty(vouchers)}" class="text-center">
+        <p th:text="#{voucher.catalog.empty}">
+            No vouchers available at the moment.
+        </p>
     </div>
 </div>
 
+<style>
+  .expandable-card {
+    transition: transform .2s ease, z-index .2s ease;
+  }
+  .expandable-card.active {
+    position: relative;
+    z-index: 1050;
+    transform: scale(1.05);
+  }
+
+</style>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<script>
+  document.querySelectorAll('.btn-review').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const card = this.closest('.expandable-card');
+      const wasActive = card.classList.contains('active');
+      document.querySelectorAll('.expandable-card.active')
+              .forEach(c => c.classList.remove('active'));
+      if (!wasActive) card.classList.add('active');
+    });
+  });
+
+</script>
