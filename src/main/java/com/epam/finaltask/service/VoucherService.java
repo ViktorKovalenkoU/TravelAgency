@@ -4,6 +4,8 @@ import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.VoucherFilterRequest;
 import com.epam.finaltask.model.HotelType;
 import com.epam.finaltask.model.TourType;
+import com.epam.finaltask.model.VoucherStatus;
+
 import java.util.List;
 
 public interface VoucherService {
@@ -11,7 +13,8 @@ public interface VoucherService {
     VoucherDTO order(String id, String userId);
     VoucherDTO update(String id, VoucherDTO voucherDTO);
     void delete(String voucherId);
-    VoucherDTO changeHotStatus(String id, VoucherDTO voucherDTO);
+    VoucherDTO changeHotStatus(String id, boolean hot, String locale);
+    VoucherDTO changeStatus(String id, VoucherStatus status, String locale);
     List<VoucherDTO> findAllByUserId(String userId);
     List<VoucherDTO> findAllByTourType(TourType tourType);
     List<VoucherDTO> findAllByTransferType(String transferType);

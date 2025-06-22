@@ -20,49 +20,98 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
     <div class="container">
-        <a class="navbar-brand fw-bold" th:href="@{/}" th:text="#{home.nav.brand}">Travel Agency</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHome">
+        <a class="navbar-brand fw-bold"
+           th:href="@{/(lang=${#locale.language})}"
+           th:text="#{home.nav.brand}">Travel Agency
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarHome">
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav ms-auto align-items-center">
+
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-outline-primary me-2" th:href="@{/auth/sign-in}" th:text="#{button.signin}">Sign
-                        In</a>
+                    <a class="btn btn-outline-primary me-2"
+                       th:href="@{/auth/sign-in}"
+                       th:text="#{button.signin}">
+                        Sign In
+                    </a>
                 </li>
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-primary me-3" th:href="@{/auth/sign-up}" th:text="#{button.signup}">Sign Up</a>
+                    <a class="btn btn-primary me-3"
+                       th:href="@{/auth/sign-up}"
+                       th:text="#{button.signup}">
+                        Sign Up
+                    </a>
                 </li>
+
+                <li class="nav-item" sec:authorize="hasRole('MANAGER')">
+                    <a class="btn btn-outline-secondary me-2"
+                       th:href="@{/manager(lang=${#locale.language})}"
+                       th:text="#{dashboard.nav.manager}">
+                        Manager Panel
+                    </a>
+                </li>
+
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="btn btn-outline-secondary me-2" th:href="@{/profile}" th:text="#{button.profile}">My
-                        Profile</a>
+                    <a class="btn btn-outline-secondary me-2"
+                       th:href="@{/profile}"
+                       th:text="#{button.profile}">
+                        My Profile
+                    </a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form th:action="@{/auth/logout}" method="post" class="d-inline">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <button type="submit" class="btn btn-outline-danger me-3" th:text="#{button.logout}">Logout
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
+                        <button class="btn btn-outline-danger me-3"
+                                type="submit"
+                                th:text="#{button.logout}">
+                            Logout
                         </button>
                     </form>
                 </li>
+
                 <li class="nav-item dropdown">
-                    <button class="btn btn-outline-info dropdown-toggle" id="langDropdown" data-bs-toggle="dropdown"
-                            th:text="#{button.language}">Language
+                    <button class="btn btn-outline-info dropdown-toggle"
+                            id="langDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            th:text="#{button.language}">
+                        Language
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end"
+                        aria-labelledby="langDropdown">
                         <li>
-                            <a class="dropdown-item" th:href="@{/(lang='en')}" th:text="#{button.lang.en}">EN</a>
+                            <a class="dropdown-item"
+                               th:href="@{/(lang='en')}"
+                               th:text="#{button.lang.en}">EN</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" th:href="@{/(lang='uk')}" th:text="#{button.lang.uk}">UK</a>
+                            <a class="dropdown-item"
+                               th:href="@{/(lang='uk')}"
+                               th:text="#{button.lang.uk}">UK</a>
                         </li>
                     </ul>
                 </li>
+
             </ul>
         </div>
     </div>
 </nav>
+
 
 <header class="py-5 mb-5 text-center text-white" style="background: linear-gradient(135deg, #2c3e50, #4ca1af);">
     <div class="container">
@@ -78,12 +127,16 @@
 <div class="container mb-4">
     <h2 class="mb-3" th:text="#{voucher.filter.header}">Filter Vouchers</h2>
 
-    <form th:action="@{/(lang=${locale})}"
+    <form th:action="@{/(lang=${#locale.language})}"
           th:object="${filter}"
           method="get"
           class="row gy-2 gx-3 align-items-end">
 
-        <!-- Tour Type -->
+        <input type="hidden"
+               name="lang"
+               th:value="${#locale.language}"/>
+
+
         <div class="col-md-3">
             <label for="tourType" class="form-label"
                    th:text="#{voucher.filter.tourType}">Tour Type</label>
@@ -93,12 +146,11 @@
                 <option value="" th:text="#{voucher.filter.all}">All</option>
                 <option th:each="t : ${T(com.epam.finaltask.model.TourType).values()}"
                         th:value="${t}"
-                        th:text="#{tourType.${t}}">Health
+                        th:text="${#messages.msg('tourType.' + t)}">
                 </option>
             </select>
         </div>
 
-        <!-- Transfer Type -->
         <div class="col-md-3">
             <label for="transferType" class="form-label"
                    th:text="#{voucher.filter.transferType}">Transfer Type</label>
@@ -108,12 +160,11 @@
                 <option value="" th:text="#{voucher.filter.all}">All</option>
                 <option th:each="tr : ${T(com.epam.finaltask.model.TransferType).values()}"
                         th:value="${tr}"
-                        th:text="#{transferType.${tr}}">Bus
+                        th:text="${#messages.msg('transferType.' + tr)}">
                 </option>
             </select>
         </div>
 
-        <!-- Hotel Type -->
         <div class="col-md-2">
             <label for="hotelType" class="form-label"
                    th:text="#{voucher.filter.hotelType}">Hotel Type</label>
@@ -123,12 +174,11 @@
                 <option value="" th:text="#{voucher.filter.all}">All</option>
                 <option th:each="h : ${T(com.epam.finaltask.model.HotelType).values()}"
                         th:value="${h}"
-                        th:text="#{hotelType.${h}}">One Star
+                        th:text="${#messages.msg('hotelType.' + h)}">
                 </option>
             </select>
         </div>
 
-        <!-- Min Price -->
         <div class="col-md-2">
             <label for="minPrice" class="form-label"
                    th:text="#{voucher.filter.minPrice}">Min Price</label>
@@ -138,7 +188,6 @@
                    id="minPrice"/>
         </div>
 
-        <!-- Max Price -->
         <div class="col-md-2">
             <label for="maxPrice" class="form-label"
                    th:text="#{voucher.filter.maxPrice}">Max Price</label>
@@ -150,7 +199,8 @@
 
         <div class="col-md-1">
             <button type="submit" class="btn btn-primary"
-                    th:text="#{voucher.filter.button}">Filter
+                    th:text="#{voucher.filter.button}">
+                Filter
             </button>
         </div>
     </form>
@@ -197,6 +247,18 @@
                                 th:text="${#temporals.format(voucher.evictionDate,'dd.MM.yyyy')}">
                                 07.07.2025
                             </dd>
+
+                            <dt class="col-sm-4" th:text="#{voucher.filter.tourType}">Tour Type:</dt>
+                            <dd class="col-sm-8"
+                                th:text="${#messages.msg('tourType.' + voucher.tourType)}">Health</dd>
+
+                            <dt class="col-sm-4" th:text="#{voucher.filter.transferType}">Transfer Type:</dt>
+                            <dd class="col-sm-8"
+                                th:text="${#messages.msg('transferType.' + voucher.transferType)}">Bus</dd>
+
+                            <dt class="col-sm-4" th:text="#{voucher.filter.hotelType}">Hotel Type:</dt>
+                            <dd class="col-sm-8"
+                                th:text="${#messages.msg('hotelType.' + voucher.hotelType)}">Three Stars</dd>
 
                         </dl>
                     </div>

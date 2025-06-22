@@ -2,10 +2,12 @@ package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.VoucherFilterRequest;
+import com.epam.finaltask.exception.ResourceNotFoundException;
 import com.epam.finaltask.mapper.VoucherMapper;
 import com.epam.finaltask.model.*;
 import com.epam.finaltask.repository.VoucherRepository;
 import com.epam.finaltask.specification.VoucherSpecification;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.Order;
 import org.slf4j.Logger;
@@ -60,13 +62,25 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public VoucherDTO changeHotStatus(String id, VoucherDTO voucherDTO) {
-        Voucher existing = voucherRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Voucher not found with id: " + id));
-        existing.setHot(voucherDTO.isHot());
-        Voucher updated = voucherRepository.save(existing);
-        return voucherMapper.toVoucherDTO(updated);
+    @Transactional
+    public VoucherDTO changeHotStatus(String id, boolean hot, String locale) {
+        Voucher v = voucherRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Voucher not found: " + id));
+        v.setHot(hot);
+        voucherRepository.save(v);
+        return voucherMapper.toVoucherDTO(v, locale);
     }
+
+    @Override
+    @Transactional
+    public VoucherDTO changeStatus(String id, VoucherStatus newStatus, String locale) {
+        Voucher v = voucherRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Voucher not found: " + id));
+        v.setStatus(newStatus);
+        voucherRepository.save(v);
+        return voucherMapper.toVoucherDTO(v, locale);
+    }
+
 
     @Override
     public List<VoucherDTO> findAllByUserId(String userId) {
