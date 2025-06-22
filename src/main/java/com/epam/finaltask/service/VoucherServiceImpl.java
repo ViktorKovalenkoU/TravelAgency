@@ -7,8 +7,11 @@ import com.epam.finaltask.model.*;
 import com.epam.finaltask.repository.VoucherRepository;
 import com.epam.finaltask.specification.VoucherSpecification;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -159,10 +162,13 @@ public class VoucherServiceImpl implements VoucherService {
     }
     @Override
     public List<VoucherDTO> findAllByFilter(VoucherFilterRequest filter, String locale) {
-        return voucherRepository.findAll(VoucherSpecification.byFilter(filter)).stream()
+        Specification<Voucher> spec = VoucherSpecification.byFilter(filter);
+        Sort sort = Sort.by("isHot").descending();
+
+        return voucherRepository
+                .findAll(spec, sort)
+                .stream()
                 .map(v -> voucherMapper.toVoucherDTO(v, locale))
                 .collect(Collectors.toList());
     }
-
-
 }
