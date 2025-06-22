@@ -126,49 +126,68 @@ public class VoucherServiceImpl implements VoucherService {
 
         vouchers.sort((v1, v2) -> {
             int hotCompare = Boolean.compare(v2.isHot(), v1.isHot());
-            return (hotCompare != 0) ? hotCompare : v1.getArrivalDate().compareTo(v2.getArrivalDate());
+            if (hotCompare != 0) {
+                return hotCompare;
+            }
+            return v1.getArrivalDate().compareTo(v2.getArrivalDate());
         });
 
-        List<VoucherDTO> dtos = vouchers.stream().map(voucher -> {
-            VoucherDTO dto = new VoucherDTO();
-            dto.setId(voucher.getId().toString());
-            VoucherTranslation translation = voucher.getTranslations().stream()
-                    .filter(t -> t.getLocale().equalsIgnoreCase(locale))
-                    .findFirst()
-                    .orElse(null);
-            if (translation != null) {
-                dto.setTitle(translation.getTitle());
-                dto.setDescription(translation.getDescription());
-            } else {
-                dto.setTitle(voucher.getTitle());
-                dto.setDescription(voucher.getDescription());
-            }
-            dto.setPrice(voucher.getPrice());
-            dto.setStatus(voucher.getStatus().name());
-            dto.setAvailable(voucher.isAvailableForPurchase());
-            dto.setAvailableForPurchase(voucher.isAvailableForPurchase());
-            dto.setHotelType(voucher.getHotelType() != null ? voucher.getHotelType().name() : null);
-            dto.setTransferType(voucher.getTransferType() != null ? voucher.getTransferType().name() : null);
-            dto.setTourType(voucher.getTourType() != null ? voucher.getTourType().name() : null);
-            dto.setArrivalDate(voucher.getArrivalDate());
-            dto.setEvictionDate(voucher.getEvictionDate());
-            dto.setUserId(voucher.getUser() != null ? voucher.getUser().getId() : null);
-            dto.setHot(voucher.isHot());
-            return dto;
-        }).collect(Collectors.toList());
+        List<VoucherDTO> dtos = vouchers.stream()
+                .map(v -> {
+                    VoucherDTO dto = new VoucherDTO();
+                    dto.setId(v.getId().toString());
+
+                    VoucherTranslation tr = v.getTranslations().stream()
+                            .filter(t -> t.getLocale().equalsIgnoreCase(locale))
+                            .findFirst()
+                            .orElse(null);
+                    if (tr != null) {
+                        dto.setTitle(tr.getTitle());
+                        dto.setDescription(tr.getDescription());
+                    } else {
+                        dto.setTitle(v.getTitle());
+                        dto.setDescription(v.getDescription());
+                    }
+
+                    dto.setPrice(v.getPrice());
+                    dto.setStatus(v.getStatus().name());
+                    dto.setTourType(v.getTourType() != null ? v.getTourType().name() : null);
+                    dto.setTransferType(v.getTransferType() != null ? v.getTransferType().name() : null);
+                    dto.setHotelType(v.getHotelType() != null ? v.getHotelType().name() : null);
+                    dto.setArrivalDate(v.getArrivalDate());
+                    dto.setEvictionDate(v.getEvictionDate());
+                    dto.setUserId(v.getUser() != null ? v.getUser().getId() : null);
+                    dto.setHot(v.isHot());
+
+                    boolean avail = v.isAvailableForPurchase();
+                    dto.setAvailable(avail);
+                    dto.setAvailableForPurchase(avail);
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
 
         logger.debug("Список ваучерів сформовано, розмір: {}", dtos.size());
         return dtos;
     }
+
     @Override
     public List<VoucherDTO> findAllByFilter(VoucherFilterRequest filter, String locale) {
         Specification<Voucher> spec = VoucherSpecification.byFilter(filter);
-        Sort sort = Sort.by("isHot").descending();
 
-        return voucherRepository
-                .findAll(spec, sort)
+        Sort sort = Sort.by("isHot").descending()
+                .and(Sort.by("arrivalDate").ascending());
+
+        return voucherRepository.findAll(spec, sort)
                 .stream()
-                .map(v -> voucherMapper.toVoucherDTO(v, locale))
+                .map(v -> {
+                    VoucherDTO dto = voucherMapper.toVoucherDTO(v, locale);
+                    boolean avail = v.isAvailableForPurchase();
+                    dto.setAvailable(avail);
+                    dto.setAvailableForPurchase(avail);
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 }
+

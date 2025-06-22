@@ -60,8 +60,13 @@ public class Voucher {
     @Column(name = "eviction_date", nullable = false)
     private LocalDate evictionDate;
 
+    @Transient
     public boolean isAvailableForPurchase() {
-        return LocalDate.now().isBefore(arrivalDate.minusDays(1));
+        LocalDate today = LocalDate.now();
+        LocalDate registrationEnd = arrivalDate.minusDays(1);
+        if (status == VoucherStatus.CANCELED) {
+            return false;
+        }
+        return !today.isAfter(registrationEnd);
     }
-
 }

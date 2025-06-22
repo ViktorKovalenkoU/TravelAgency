@@ -44,9 +44,7 @@ public class VoucherOrderService {
                     return new ResourceNotFoundException("User not found: " + userId);
                 });
 
-        voucher.setStatus(VoucherStatus.PAID);
-        voucherRepository.save(voucher);
-        logger.info("Оновлено статус ваучера {} на PAID", voucherId);
+        logger.info("Оновлено статус ваучера {}", voucherId);
 
         VoucherOrder order = new VoucherOrder();
         order.setUser(user);
