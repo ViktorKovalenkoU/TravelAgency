@@ -33,7 +33,6 @@ public class VoucherOrderService {
                     return new ResourceNotFoundException("Voucher not found with id: " + voucherId);
                 });
 
-        // Перевірка доступності за датою прибуття:
         if (!voucher.isAvailableForPurchase()) {
             logger.error("Ваучер {} більше не доступний для покупки: термін реєстрації завершився", voucherId);
             throw new IllegalArgumentException("Registration period for this voucher has ended");

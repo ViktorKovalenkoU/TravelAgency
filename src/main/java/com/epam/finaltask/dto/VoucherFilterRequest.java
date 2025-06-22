@@ -20,3 +20,4 @@ public class VoucherFilterRequest {
 
     private BigDecimal maxPrice;
 }
+

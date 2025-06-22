@@ -46,9 +46,7 @@ public class UserServiceImpl implements UserService {
             throw new ResourceAlreadyExistsException("Phone number already taken");
         }
 
-        // Мапимо DTO до сутності (але userMapper може не відображати поля для імені та прізвища)
         User user = userMapper.toUser(dto);
-        // Додатково встановлюємо поля name та surname з відповідних полів DTO
         user.setName(dto.getFirstName());
         user.setSurname(dto.getLastName());
 

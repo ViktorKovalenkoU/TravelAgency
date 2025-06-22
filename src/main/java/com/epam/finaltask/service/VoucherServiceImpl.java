@@ -1,9 +1,11 @@
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.VoucherDTO;
+import com.epam.finaltask.dto.VoucherFilterRequest;
 import com.epam.finaltask.mapper.VoucherMapper;
 import com.epam.finaltask.model.*;
 import com.epam.finaltask.repository.VoucherRepository;
+import com.epam.finaltask.specification.VoucherSpecification;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,4 +157,12 @@ public class VoucherServiceImpl implements VoucherService {
         logger.debug("Список ваучерів сформовано, розмір: {}", dtos.size());
         return dtos;
     }
+    @Override
+    public List<VoucherDTO> findAllByFilter(VoucherFilterRequest filter, String locale) {
+        return voucherRepository.findAll(VoucherSpecification.byFilter(filter)).stream()
+                .map(v -> voucherMapper.toVoucherDTO(v, locale))
+                .collect(Collectors.toList());
+    }
+
+
 }

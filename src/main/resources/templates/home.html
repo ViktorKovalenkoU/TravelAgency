@@ -71,52 +71,77 @@
 
 <div class="container mb-4">
     <h2 class="mb-3" th:text="#{voucher.filter.header}">Filter Vouchers</h2>
-    <form action="/" method="get" class="row gy-2 gx-3 align-items-end">
+
+    <form th:action="@{/(lang=${locale})}"
+          th:object="${filter}"
+          method="get"
+          class="row gy-2 gx-3 align-items-end">
+
+        <!-- Tour Type -->
         <div class="col-md-3">
-            <label for="tourType" class="form-label" th:text="#{voucher.filter.tourType}">Tour Type</label>
-            <select class="form-control" id="tourType" name="tourType">
+            <label for="tourType" class="form-label"
+                   th:text="#{voucher.filter.tourType}">Tour Type</label>
+            <select th:field="*{tourType}"
+                    class="form-select"
+                    id="tourType">
                 <option value="" th:text="#{voucher.filter.all}">All</option>
-                <option value="HEALTH" th:text="#{tourType.HEALTH}">Health</option>
-                <option value="SPORTS" th:text="#{tourType.SPORTS}">Sports</option>
-                <option value="LEISURE" th:text="#{tourType.LEISURE}">Leisure</option>
-                <option value="SAFARI" th:text="#{tourType.SAFARI}">Safari</option>
-                <option value="WINE" th:text="#{tourType.WINE}">Wine</option>
-                <option value="ECO" th:text="#{tourType.ECO}">Eco</option>
-                <option value="ADVENTURE" th:text="#{tourType.ADVENTURE}">Adventure</option>
-                <option value="CULTURAL" th:text="#{tourType.CULTURAL}">Cultural</option>
+                <option th:each="t : ${T(com.epam.finaltask.model.TourType).values()}"
+                        th:value="${t}"
+                        th:text="#{tourType.${t}}">Health</option>
             </select>
         </div>
+
+        <!-- Transfer Type -->
         <div class="col-md-3">
-            <label for="transferType" class="form-label" th:text="#{voucher.filter.transferType}">Transfer Type</label>
-            <select class="form-control" id="transferType" name="transferType">
+            <label for="transferType" class="form-label"
+                   th:text="#{voucher.filter.transferType}">Transfer Type</label>
+            <select th:field="*{transferType}"
+                    class="form-select"
+                    id="transferType">
                 <option value="" th:text="#{voucher.filter.all}">All</option>
-                <option value="BUS" th:text="#{transferType.BUS}">Bus</option>
-                <option value="TRAIN" th:text="#{transferType.TRAIN}">Train</option>
-                <option value="PLANE" th:text="#{transferType.PLANE}">Plane</option>
-                <option value="SHIP" th:text="#{transferType.SHIP}">Ship</option>
-                <option value="PRIVATE_CAR" th:text="#{transferType.PRIVATE_CAR}">Private Car</option>
-                <option value="JEEPS" th:text="#{transferType.JEEPS}">Jeep</option>
-                <option value="MINIBUS" th:text="#{transferType.MINIBUS}">Minibus</option>
-                <option value="ELECTRICAL_CARS" th:text="#{transferType.ELECTRICAL_CARS}">Electrical Cars</option>
+                <option th:each="tr : ${T(com.epam.finaltask.model.TransferType).values()}"
+                        th:value="${tr}"
+                        th:text="#{transferType.${tr}}">Bus</option>
             </select>
         </div>
+
+        <!-- Hotel Type -->
         <div class="col-md-2">
-            <label for="price" class="form-label" th:text="#{voucher.filter.price}">Price ($)</label>
-            <input type="number" id="price" name="price" class="form-control" th:placeholder="#{voucher.filter.price}">
-        </div>
-        <div class="col-md-3">
-            <label for="hotelType" class="form-label" th:text="#{voucher.filter.hotelType}">Hotel Type</label>
-            <select class="form-control" id="hotelType" name="hotelType">
+            <label for="hotelType" class="form-label"
+                   th:text="#{voucher.filter.hotelType}">Hotel Type</label>
+            <select th:field="*{hotelType}"
+                    class="form-select"
+                    id="hotelType">
                 <option value="" th:text="#{voucher.filter.all}">All</option>
-                <option value="ONE_STAR" th:text="#{hotelType.ONE_STAR}">One Star</option>
-                <option value="TWO_STARS" th:text="#{hotelType.TWO_STARS}">Two Stars</option>
-                <option value="THREE_STARS" th:text="#{hotelType.THREE_STARS}">Three Stars</option>
-                <option value="FOUR_STARS" th:text="#{hotelType.FOUR_STARS}">Four Stars</option>
-                <option value="FIVE_STARS" th:text="#{hotelType.FIVE_STARS}">Five Stars</option>
+                <option th:each="h : ${T(com.epam.finaltask.model.HotelType).values()}"
+                        th:value="${h}"
+                        th:text="#{hotelType.${h}}">One Star</option>
             </select>
         </div>
+        
+        <!-- Min Price -->
+        <div class="col-md-2">
+            <label for="minPrice" class="form-label"
+                   th:text="#{voucher.filter.minPrice}">Min Price</label>
+            <input th:field="*{minPrice}"
+                   type="number" step="0.01"
+                   class="form-control"
+                   id="minPrice"/>
+        </div>
+
+        <!-- Max Price -->
+        <div class="col-md-2">
+            <label for="maxPrice" class="form-label"
+                   th:text="#{voucher.filter.maxPrice}">Max Price</label>
+            <input th:field="*{maxPrice}"
+                   type="number" step="0.01"
+                   class="form-control"
+                   id="maxPrice"/>
+        </div>
+
         <div class="col-md-1">
-            <button type="submit" class="btn btn-primary" th:text="#{voucher.filter.button}">Filter</button>
+            <button type="submit" class="btn btn-primary"
+                    th:text="#{voucher.filter.button}">Filter</button>
         </div>
     </form>
 </div>

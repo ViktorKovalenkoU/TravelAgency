@@ -1,6 +1,7 @@
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.VoucherDTO;
+import com.epam.finaltask.dto.VoucherFilterRequest;
 import com.epam.finaltask.model.HotelType;
 import com.epam.finaltask.model.TourType;
 import java.util.List;
@@ -17,4 +18,5 @@ public interface VoucherService {
     List<VoucherDTO> findAllByHotelType(HotelType hotelType);
     List<VoucherDTO> findAllByPrice(Double price);
     List<VoucherDTO> findAll(String locale);
+    List<VoucherDTO> findAllByFilter(VoucherFilterRequest filter, String locale);
 }
