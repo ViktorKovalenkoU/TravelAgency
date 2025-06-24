@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,14 +22,19 @@ public class HomeController {
     @GetMapping({"/", "/home"})
     public String homePage(
             @ModelAttribute VoucherFilterRequest filter,
-            @RequestParam(value = "lang", defaultValue = "en") String lang,
+            @RequestParam(value = "lang", required = false) String langParam,
+            Locale locale,
             Model model) {
+
+        String lang = langParam != null
+                ? langParam
+                : locale.getLanguage();
 
         List<VoucherDTO> vouchers = voucherService.findAllByFilter(filter, lang);
 
         model.addAttribute("filter", filter);
         model.addAttribute("vouchers", vouchers);
-        model.addAttribute("locale", lang);
+        model.addAttribute("lang", lang);
         return "home";
     }
 }

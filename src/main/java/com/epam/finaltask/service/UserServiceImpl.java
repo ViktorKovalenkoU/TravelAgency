@@ -5,17 +5,23 @@ import com.epam.finaltask.dto.SignUpRequestDTO;
 import com.epam.finaltask.exception.ResourceAlreadyExistsException;
 import com.epam.finaltask.exception.ResourceNotFoundException;
 import com.epam.finaltask.mapper.UserMapper;
+import com.epam.finaltask.model.Role;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -133,5 +139,31 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
         user.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
         userRepository.save(user);
+    }
+
+    @Override
+    public List<UserDTO> findAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void changeUserRole(UUID userId, Role newRole) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (user.getUsername().equals(currentUsername)) {
+            throw new IllegalStateException("Cannot change your own role");
+        }
+
+        user.setRole(newRole);
+        userRepository.save(user);
+    }
+
+    private String getCurrentUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

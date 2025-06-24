@@ -24,10 +24,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false)
     private String surname;
 
     @Column(nullable = false)
@@ -55,6 +55,9 @@ public class User {
     private int failedAttempts;
 
     private LocalDateTime lockTime;
+
+    @Column(nullable = false)
+    boolean locked;
 
     public void addVoucher(Voucher voucher) {
         vouchers.add(voucher);

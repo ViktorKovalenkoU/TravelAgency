@@ -9,6 +9,7 @@ import com.epam.finaltask.repository.VoucherOrderRepository;
 import com.epam.finaltask.repository.VoucherRepository;
 import com.epam.finaltask.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -33,13 +34,32 @@ public class ProfileController {
     private final VoucherRepository voucherRepository;
 
     @GetMapping("/profile")
-    public String profile(@AuthenticationPrincipal UserDetails principal, Model model) {
+    public String profile(
+            @AuthenticationPrincipal UserDetails principal,
+            @RequestParam(value = "lang", required = false) String lang,
+            Model model) {
+
+        // Якщо lang у запиті відсутній, беремо його із вже встановленої локалі
+        if (lang == null) {
+            // #locale в Thymeleaf – це Locale, але тут ми можемо не опускатися на JavaSide
+            // Бо CookieLocaleResolver уже встановив правильну локаль.
+            // Просто передамо ту ж мову, що і в #locale:
+            lang = LocaleContextHolder.getLocale().getLanguage();
+        }
+
         UserDTO user = userService.getUserByUsername(principal.getUsername());
-        List<VoucherOrder> orders = voucherOrderRepository.findByUserUsername(principal.getUsername());
+        List<VoucherOrder> orders =
+                voucherOrderRepository.findByUserUsername(principal.getUsername());
+
         model.addAttribute("user", user);
         model.addAttribute("orders", orders);
+
+        // прокинути lang у сторінку
+        model.addAttribute("lang", lang);
+
         return "profile";
     }
+
 
     @PostMapping("/profile/topup")
     public String topUpBalance(Principal principal,
