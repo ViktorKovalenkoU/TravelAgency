@@ -56,6 +56,9 @@ public class UserServiceImpl implements UserService {
         user.setName(dto.getFirstName());
         user.setSurname(dto.getLastName());
 
+        user.setRole(Role.USER);
+        user.setActive(true);
+
         user.setBalance(BigDecimal.ZERO);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setPhoneNumber(dto.getPhoneNumber());

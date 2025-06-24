@@ -1,6 +1,5 @@
 package com.epam.finaltask.controller;
 
-import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.model.VoucherStatus;
 import com.epam.finaltask.service.VoucherService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/manager")
@@ -24,9 +22,7 @@ public class ManagerController {
             @RequestParam(value = "lang", defaultValue = "en") String lang,
             Model model) {
 
-        // 1) додаємо ваучери
         model.addAttribute("vouchers", voucherService.findAll(lang));
-        // 2) додаємо масив статусів для <select>
         model.addAttribute("allStatuses", VoucherStatus.values());
         return "manager";
     }

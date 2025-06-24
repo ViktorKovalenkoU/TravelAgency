@@ -67,9 +67,6 @@ public class VoucherRestController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Toggle HOT flag. Expects JSON: { "hot": true|false }
-     */
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<VoucherDTO>> changeVoucherHotStatus(
             @PathVariable("id") String id,

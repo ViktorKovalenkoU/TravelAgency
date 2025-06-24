@@ -36,7 +36,4 @@ public class SignUpRequestDTO {
             message = "{phone.invalid}"
     )
     private String phoneNumber;
-
-    @NotEmpty(message = "{role.required}")
-    private String role;
 }

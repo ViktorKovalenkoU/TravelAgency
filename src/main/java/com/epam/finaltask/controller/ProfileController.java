@@ -39,11 +39,7 @@ public class ProfileController {
             @RequestParam(value = "lang", required = false) String lang,
             Model model) {
 
-        // Якщо lang у запиті відсутній, беремо його із вже встановленої локалі
         if (lang == null) {
-            // #locale в Thymeleaf – це Locale, але тут ми можемо не опускатися на JavaSide
-            // Бо CookieLocaleResolver уже встановив правильну локаль.
-            // Просто передамо ту ж мову, що і в #locale:
             lang = LocaleContextHolder.getLocale().getLanguage();
         }
 
@@ -53,8 +49,6 @@ public class ProfileController {
 
         model.addAttribute("user", user);
         model.addAttribute("orders", orders);
-
-        // прокинути lang у сторінку
         model.addAttribute("lang", lang);
 
         return "profile";
@@ -67,15 +61,15 @@ public class ProfileController {
                                RedirectAttributes redirectAttributes) {
 
         if (amount < 0 || amount > 10000) {
-            redirectAttributes.addFlashAttribute("error", "Сума має бути від 0 до 10 000 доларів.");
+            redirectAttributes.addFlashAttribute("error", "The amount must be between $0 and $10,000.");
             return "redirect:/profile";
         }
 
         try {
             userService.topUpBalance(principal.getName(), amount);
-            redirectAttributes.addFlashAttribute("success", "Баланс успішно поповнено!");
+            redirectAttributes.addFlashAttribute("success", "Balance successfully topped up!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Сталася помилка при поповненні балансу.");
+            redirectAttributes.addFlashAttribute("error", "An error occurred while replenishing the balance.");
         }
 
         return "redirect:/profile";
@@ -90,11 +84,11 @@ public class ProfileController {
 
         String username = principal.getName();
         if (!order.getUser().getUsername().equals(username)) {
-            redirectAttributes.addFlashAttribute("error", "Ви не маєте прав для оплати цього замовлення.");
+            redirectAttributes.addFlashAttribute("error", "You are not authorized to pay for this order.");
             return "redirect:/profile";
         }
         if (order.getOrderStatus().toString().toLowerCase().equals("confirmed")) {
-            redirectAttributes.addFlashAttribute("info", "Замовлення вже оплачено.");
+            redirectAttributes.addFlashAttribute("info", "The order has already been paid for.");
             return "redirect:/profile";
         }
 
@@ -103,7 +97,7 @@ public class ProfileController {
 
         BigDecimal totalPrice = BigDecimal.valueOf(order.getTotalPrice());
         if (user.getBalance() == null || user.getBalance().compareTo(totalPrice) < 0) {
-            redirectAttributes.addFlashAttribute("error", "Замало коштів, поповніть баланс.");
+            redirectAttributes.addFlashAttribute("error", "Not enough funds, top up your balance.");
             return "redirect:/profile";
         }
 
@@ -112,7 +106,7 @@ public class ProfileController {
         voucherOrderRepository.save(order);
         userRepository.save(user);
 
-        redirectAttributes.addFlashAttribute("success", "Оплата пройшла успішно!");
+        redirectAttributes.addFlashAttribute("success", "Payment was successful!");
         return "redirect:/profile";
     }
 
@@ -125,11 +119,11 @@ public class ProfileController {
 
         String username = principal.getName();
         if (!order.getUser().getUsername().equals(username)) {
-            redirectAttributes.addFlashAttribute("error", "Ви не маєте прав для скасування цього замовлення.");
+            redirectAttributes.addFlashAttribute("error", "You do not have permission to cancel this order.");
             return "redirect:/profile";
         }
         if (order.getOrderStatus().toString().toLowerCase().equals("confirmed")) {
-            redirectAttributes.addFlashAttribute("error", "Замовлення вже оплачено, скасувати неможливо.");
+            redirectAttributes.addFlashAttribute("error", "The order has already been paid for, it cannot be canceled.");
             return "redirect:/profile";
         }
 
@@ -139,7 +133,7 @@ public class ProfileController {
         order.getVoucher().setStatus(VoucherStatus.REGISTERED);
         voucherRepository.save(order.getVoucher());
 
-        redirectAttributes.addFlashAttribute("success", "Замовлення скасовано, ваучер знову доступний для придбання.");
+        redirectAttributes.addFlashAttribute("success", "Order cancelled, voucher available for purchase again.");
         return "redirect:/profile";
     }
 }

@@ -5,7 +5,6 @@ import com.epam.finaltask.model.Voucher;
 import com.epam.finaltask.model.VoucherTranslation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Context;
-import org.mapstruct.Mapping;
 
 import java.util.Optional;
 
