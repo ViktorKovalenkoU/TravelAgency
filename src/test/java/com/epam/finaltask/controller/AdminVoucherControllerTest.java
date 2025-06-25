@@ -35,7 +35,7 @@ class AdminVoucherControllerTest {
     private VoucherService voucherService;
 
     @Test
-    @DisplayName("GET /admin/vouchers/create → статус 200 і порожній DTO з enum-списками")
+    @DisplayName("GET /admin/vouchers/create → status 200 and empty DTO with enum lists")
     @WithMockUser(roles = "ADMIN")
     void shouldShowCreateForm() throws Exception {
         mockMvc.perform(get("/admin/vouchers/create"))
@@ -50,7 +50,7 @@ class AdminVoucherControllerTest {
     }
 
     @Test
-    @DisplayName("POST /admin/vouchers/create → валідні дані, виклик сервісу і редірект")
+    @DisplayName("POST /admin/vouchers/create → valid data, service call and redirect")
     @WithMockUser(username = "admin", roles = "ADMIN")
     void shouldCreateVoucherAndRedirect() throws Exception {
         given(voucherService.create(any(VoucherDTO.class)))
@@ -83,7 +83,7 @@ class AdminVoucherControllerTest {
     }
 
     @Test
-    @DisplayName("GET /admin/vouchers/{id}/edit → статус 200, існуючий DTO і enum-списки")
+    @DisplayName("GET /admin/vouchers/{id}/edit → status 200, existing DTO and enum lists")
     @WithMockUser(roles = "ADMIN")
     void shouldShowEditForm() throws Exception {
         String id = UUID.randomUUID().toString();
@@ -103,7 +103,7 @@ class AdminVoucherControllerTest {
     }
 
     @Test
-    @DisplayName("POST /admin/vouchers/{id}/update → валідні дані, оновлення і редірект")
+    @DisplayName("POST /admin/vouchers/{id}/update → valid data, update and redirect")
     @WithMockUser(roles = "ADMIN")
     void shouldUpdateAndRedirect() throws Exception {
         String id = UUID.randomUUID().toString();
@@ -131,7 +131,7 @@ class AdminVoucherControllerTest {
     }
 
     @Test
-    @DisplayName("POST /admin/vouchers/{id}/delete → видалення і редірект")
+    @DisplayName("POST /admin/vouchers/{id}/delete → delete and redirect")
     @WithMockUser(roles = "ADMIN")
     void shouldDeleteAndRedirect() throws Exception {
         String id = UUID.randomUUID().toString();

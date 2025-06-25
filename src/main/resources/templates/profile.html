@@ -17,6 +17,9 @@
       }
 
 
+
+
+
     </style>
 </head>
 <body>
@@ -125,12 +128,15 @@
             <td th:text="${#temporals.format(order.orderDate,'yyyy-MM-dd HH:mm:ss')}">
                 2025-06-16 14:30:00
             </td>
-            <
+
             <td>
-    <span th:text="${#messages.msg(
-         'order.status.' + order.orderStatus.name().toLowerCase()
-       )}">CREATED</span>
+  <span th:if="${order.orderStatus != null}"
+        th:text="${#messages.msg(
+           'order.status.' + order.orderStatus.name().toLowerCase()
+         )}">
+  </span>
             </td>
+
 
             <td th:text="${#numbers.formatDecimal(order.totalPrice,1,'POINT',2,'COMMA')}">299.99</td>
             <td>
