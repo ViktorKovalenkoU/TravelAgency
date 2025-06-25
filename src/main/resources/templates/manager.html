@@ -129,12 +129,12 @@
                         <span th:text="${#temporals.format(voucher.evictionDate,'dd.MM.yyyy')}">End</span>
                     </td>
                     <td th:text="${#messages.msg('voucher.status.' + voucher.status)}">
-                    <span th:text="${voucher.status}">REGISTERED</span>
-                </td>
+                        <span th:text="${voucher.status}">REGISTERED</span>
+                    </td>
 
                     <td>
                         <form th:action="@{'/manager/vouchers/' + ${voucher.id} + '/hot'}" method="post">
-                            <input type="hidden" name="lang"   th:value="${#locale.language}"/>
+                            <input type="hidden" name="lang" th:value="${#locale.language}"/>
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                             <input type="hidden" name="hot" th:value="${!voucher.hot}"/>
                             <button type="submit"
@@ -153,7 +153,7 @@
                         <form th:action="@{'/manager/vouchers/' + ${voucher.id} + '/status'}"
                               method="post"
                               class="d-flex gap-2 justify-content-center align-items-center">
-                            <input type="hidden" name="lang"   th:value="${#locale.language}"/>
+                            <input type="hidden" name="lang" th:value="${#locale.language}"/>
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                             <select name="status" class="form-select form-select-sm">

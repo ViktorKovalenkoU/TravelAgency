@@ -5,6 +5,7 @@ import com.epam.finaltask.dto.VoucherFilterRequest;
 import com.epam.finaltask.exception.ResourceNotFoundException;
 import com.epam.finaltask.mapper.VoucherMapper;
 import com.epam.finaltask.model.*;
+import com.epam.finaltask.repository.UserRepository;
 import com.epam.finaltask.repository.VoucherRepository;
 import com.epam.finaltask.repository.VoucherTranslationRepository;
 import com.epam.finaltask.specification.VoucherSpecification;
@@ -32,6 +33,7 @@ public class VoucherServiceImpl implements VoucherService {
     private final VoucherRepository voucherRepository;
     private final VoucherMapper voucherMapper;
     private final VoucherTranslationRepository voucherTranslationRepository;
+    private final UserRepository userRepository;
 
     public VoucherDTO findById(String id) {
         Voucher voucher = voucherRepository.findById(UUID.fromString(id))
@@ -40,9 +42,18 @@ public class VoucherServiceImpl implements VoucherService {
         return voucherMapper.toVoucherDTO(voucher, locale);
     }
 
+    @Override
     @Transactional
     public VoucherDTO create(VoucherDTO dto) {
         Voucher voucher = voucherMapper.toVoucher(dto);
+
+        if (dto.getUserId() != null && !dto.getUserId().isBlank()) {
+            User user = userRepository.findUserByUsername(dto.getUserId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "User not found: " + dto.getUserId()));
+            voucher.setUser(user);
+        }
+
         voucher = voucherRepository.save(voucher);
 
         VoucherTranslation translation = new VoucherTranslation();
@@ -51,11 +62,11 @@ public class VoucherServiceImpl implements VoucherService {
         translation.setLocale("en");
         translation.setTitle(dto.getTitle());
         translation.setDescription(dto.getDescription());
-
         voucherTranslationRepository.save(translation);
 
         return voucherMapper.toVoucherDTO(voucher);
     }
+
 
     @Override
     public VoucherDTO order(String id, String userId) {
@@ -69,7 +80,7 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     @Transactional
     public VoucherDTO update(String id, VoucherDTO dto) {
-        log.info("🔄 Starting update for voucher ID={}, DTO={}", id, dto);
+        log.info("Starting update for voucher ID={}, DTO={}", id, dto);
 
         Voucher existing = voucherRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> {
@@ -77,7 +88,6 @@ public class VoucherServiceImpl implements VoucherService {
                     return new RuntimeException("Voucher not found with id: " + id);
                 });
 
-        // Оновлюємо базові поля, крім title/description, бо вони у перекладах
         if (dto.getTourType() != null) {
             existing.setTourType(TourType.valueOf(dto.getTourType()));
         } else {
@@ -133,7 +143,6 @@ public class VoucherServiceImpl implements VoucherService {
 
         return result;
     }
-
 
 
     @Override
@@ -214,7 +223,7 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public List<VoucherDTO> findAll(String locale) {
-        logger.debug("Отримання списку ваучерів для локалі: {}", locale);
+        logger.debug("Getting list of vouchers for locale: {}", locale);
 
         List<Voucher> vouchers = voucherRepository.findAll();
 
@@ -261,7 +270,7 @@ public class VoucherServiceImpl implements VoucherService {
                 })
                 .collect(Collectors.toList());
 
-        logger.debug("Список ваучерів сформовано, розмір: {}", dtos.size());
+        logger.debug("Voucher list generated, size: {}", dtos.size());
         return dtos;
     }
 

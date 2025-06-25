@@ -9,15 +9,24 @@ import java.util.UUID;
 
 public interface UserService {
     UserDTO register(SignUpRequestDTO dto);
+
     UserDTO getUserByUsername(String username);
+
     UserDTO updateUser(String username, UserDTO userDTO);
+
     UserDTO changeAccountStatus(UserDTO userDTO);
+
     UserDTO getUserById(UUID id);
 
     void increaseFailedAttempts(String username);
+
     void resetFailedAttempts(String username);
+
     boolean isUserLocked(String username);
+
     void topUpBalance(String username, double amount);
+
     List<UserDTO> findAllUsers();
+
     void changeUserRole(UUID userId, Role newRole);
 }

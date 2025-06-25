@@ -10,17 +10,30 @@ import java.util.List;
 
 public interface VoucherService {
     VoucherDTO create(VoucherDTO voucherDTO);
+
     VoucherDTO order(String id, String userId);
+
     VoucherDTO update(String id, VoucherDTO voucherDTO);
+
     void delete(String voucherId);
+
     VoucherDTO changeHotStatus(String id, boolean hot, String locale);
+
     VoucherDTO changeStatus(String id, VoucherStatus status, String locale);
+
     VoucherDTO findById(String id);
+
     List<VoucherDTO> findAllByUserId(String userId);
+
     List<VoucherDTO> findAllByTourType(TourType tourType);
+
     List<VoucherDTO> findAllByTransferType(String transferType);
+
     List<VoucherDTO> findAllByHotelType(HotelType hotelType);
+
     List<VoucherDTO> findAllByPrice(Double price);
+
     List<VoucherDTO> findAll(String locale);
+
     List<VoucherDTO> findAllByFilter(VoucherFilterRequest filter, String locale);
 }

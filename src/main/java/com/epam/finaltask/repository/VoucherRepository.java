@@ -15,8 +15,12 @@ public interface VoucherRepository
         JpaSpecificationExecutor<Voucher> {
 
     List<Voucher> findAllByUserId(UUID userId);
+
     List<Voucher> findAllByTourType(TourType tourType);
+
     List<Voucher> findAllByTransferType(TransferType transferType);
+
     List<Voucher> findAllByPrice(Double price);
+
     List<Voucher> findAllByHotelType(HotelType hotelType);
 }

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,26 +26,28 @@ public class VoucherOrderService {
 
     @Transactional
     public VoucherOrder orderVoucher(String voucherId, String userId) {
-        logger.info("Початок оформлення замовлення для ваучера {} користувачем {}", voucherId, userId);
+        logger.info("Initiation of order processing for voucher {} by user {}", voucherId, userId);
 
         Voucher voucher = voucherRepository.findById(UUID.fromString(voucherId))
                 .orElseThrow(() -> {
-                    logger.error("Ваучер з id {} не знайдено", voucherId);
+                    logger.error(
+                            "Voucher with id {} not found", voucherId);
                     return new ResourceNotFoundException("Voucher not found with id: " + voucherId);
                 });
 
         if (!voucher.isAvailableForPurchase()) {
-            logger.error("Ваучер {} більше не доступний для покупки: термін реєстрації завершився", voucherId);
+            logger.error("Voucher {} is no longer available for purchase: registration period has expired", voucherId);
             throw new IllegalArgumentException("Registration period for this voucher has ended");
         }
 
         User user = userRepository.findUserByUsername(userId)
                 .orElseThrow(() -> {
-                    logger.error("Користувача {} не знайдено", userId);
+                    logger.error("User {} not found", userId);
                     return new ResourceNotFoundException("User not found: " + userId);
                 });
 
-        logger.info("Оновлено статус ваучера {}", voucherId);
+        logger.info(
+                "Voucher status updated {}", voucherId);
 
         VoucherOrder order = new VoucherOrder();
         order.setUser(user);
@@ -54,7 +57,8 @@ public class VoucherOrderService {
         order.setTotalPrice(voucher.getPrice());
 
         VoucherOrder savedOrder = voucherOrderRepository.save(order);
-        logger.info("Замовлення створено: id {}", savedOrder.getId());
+        logger.info(
+                "Order created: id {}", savedOrder.getId());
         return savedOrder;
     }
 }

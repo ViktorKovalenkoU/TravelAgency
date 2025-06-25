@@ -23,19 +23,22 @@
 
         <div class="mb-3">
             <label for="username" class="form-label" th:text="#{username.label}">Username</label>
-            <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Enter username" required/>
+            <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Enter username"
+                   required/>
             <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
         </div>
 
         <div class="mb-3">
             <label for="firstName" class="form-label" th:text="#{profile.firstName}">First Name</label>
-            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" placeholder="Enter first name" required/>
+            <input type="text" id="firstName" th:field="*{firstName}" class="form-control"
+                   placeholder="Enter first name" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
         </div>
 
         <div class="mb-3">
             <label for="lastName" class="form-label" th:text="#{profile.lastName}">Last Name</label>
-            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" placeholder="Enter last name" required/>
+            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" placeholder="Enter last name"
+                   required/>
             <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
         </div>
 
@@ -47,20 +50,24 @@
 
         <div class="mb-3">
             <label for="phoneNumber" class="form-label" th:text="#{phonenumber.label}">Phone Number</label>
-            <input type="tel" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" placeholder="+380XXXXXXXXX" required/>
+            <input type="tel" id="phoneNumber" th:field="*{phoneNumber}" class="form-control"
+                   placeholder="+380XXXXXXXXX" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
         </div>
 
         <div class="mb-3">
             <label for="password" class="form-label" th:text="#{password.label}">Password</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Enter password" required/>
+            <input type="password" id="password" th:field="*{password}" class="form-control"
+                   placeholder="Enter password" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
         </div>
 
         <div class="mb-3">
             <label for="confirmPassword" class="form-label" th:text="#{password.confirm.label}">Confirm Password</label>
-            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" placeholder="Confirm password" required/>
-            <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control"
+                   placeholder="Confirm password" required/>
+            <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}"
+                 th:errors="*{confirmPassword}"></div>
         </div>
 
         <button type="submit" class="btn-register" th:text="#{button.register}">Register</button>

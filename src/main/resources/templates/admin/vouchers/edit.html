@@ -8,11 +8,19 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2 class="mb-4 text-center" th:text="#{admin.voucher.edit.header}">Edit Voucher</h2>
+    <h2 class="mb-4 text-center"
+        th:text="${voucher.id} != null
+               ? #{admin.voucher.edit.header}
+               : #{admin.voucher.create.header}">
+        Edit Voucher
+    </h2>
 
-    <form th:action="@{/admin/vouchers/{id}/update(id=${voucher.id},lang=${#locale.language})}"
+    <form th:action="${voucher.id} != null
+                   ? @{/admin/vouchers/{id}/update(id=${voucher.id},lang=${#locale.language})}
+                   : @{/admin/vouchers/create(lang=${#locale.language})}"
           th:object="${voucher}" method="post">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <input type="hidden" th:field="*{id}"/>
 
         <div class="mb-3">
             <label for="title" class="form-label" th:text="#{voucher.title}">Title</label>
@@ -21,7 +29,8 @@
 
         <div class="mb-3">
             <label for="description" class="form-label" th:text="#{voucher.description}">Description</label>
-            <textarea id="description" class="form-control" th:field="*{description}" rows="3" required></textarea>
+            <textarea id="description" class="form-control"
+                      th:field="*{description}" rows="3" required></textarea>
         </div>
 
         <div class="row">
@@ -29,15 +38,17 @@
                 <label for="arrivalDate" class="form-label" th:text="#{voucher.arrival}">Arrival Date</label>
                 <input id="arrivalDate" type="date" class="form-control"
                        th:field="*{arrivalDate}"
-                       th:value="${voucher.arrivalDate != null ? #temporals.format(voucher.arrivalDate,'yyyy-MM-dd') : ''}"
-                       required/>
+                       th:value="${voucher.arrivalDate != null
+                          ? #temporals.format(voucher.arrivalDate,'yyyy-MM-dd')
+                          : ''}" required/>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="evictionDate" class="form-label" th:text="#{voucher.eviction}">Eviction Date</label>
                 <input id="evictionDate" type="date" class="form-control"
                        th:field="*{evictionDate}"
-                       th:value="${voucher.evictionDate != null ? #temporals.format(voucher.evictionDate,'yyyy-MM-dd') : ''}"
-                       required/>
+                       th:value="${voucher.evictionDate != null
+                          ? #temporals.format(voucher.evictionDate,'yyyy-MM-dd')
+                          : ''}" required/>
             </div>
         </div>
 
@@ -47,7 +58,6 @@
                    step="0.01" min="0" required/>
         </div>
 
-        <!-- Tour Type -->
         <div class="mb-3">
             <label for="tourType" class="form-label" th:text="#{voucher.tourType}">Tour Type</label>
             <select id="tourType" class="form-select" th:field="*{tourType}">
@@ -57,7 +67,6 @@
             </select>
         </div>
 
-        <!-- Transfer Type -->
         <div class="mb-3">
             <label for="transferType" class="form-label" th:text="#{voucher.transferType}">Transfer Type</label>
             <select id="transferType" class="form-select" th:field="*{transferType}">
@@ -67,7 +76,6 @@
             </select>
         </div>
 
-        <!-- Hotel Type -->
         <div class="mb-3">
             <label for="hotelType" class="form-label" th:text="#{voucher.hotelType}">Hotel Type</label>
             <select id="hotelType" class="form-select" th:field="*{hotelType}">
@@ -77,7 +85,6 @@
             </select>
         </div>
 
-        <!-- Status -->
         <div class="mb-3">
             <label for="status" class="form-label" th:text="#{voucher.status}">Status</label>
             <select id="status" class="form-select" th:field="*{status}">

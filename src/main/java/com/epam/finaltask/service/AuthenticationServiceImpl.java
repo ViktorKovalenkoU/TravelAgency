@@ -26,7 +26,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-     private final JwtProperties jwtProperties;
+    private final JwtProperties jwtProperties;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
@@ -36,12 +36,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @PostConstruct
     public void init() {
         this.refreshTokenStore = new HashMap<>();
-        this.tokenBlacklist   = new HashSet<>();
+        this.tokenBlacklist = new HashSet<>();
     }
 
     @Override
     public AuthResponseDTO authenticate(AuthRequestDTO authRequestDTO) {
-        String username    = authRequestDTO.getUsername();
+        String username = authRequestDTO.getUsername();
         String rawPassword = authRequestDTO.getPassword();
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -49,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new BadCredentialsException("Invalid username or password");
         }
 
-        String accessToken  = generateToken(username, jwtProperties.getExpiration());
+        String accessToken = generateToken(username, jwtProperties.getExpiration());
         String refreshToken = generateToken(username, jwtProperties.getRefreshTokenExpiration());
 
         refreshTokenStore.put(username, refreshToken);
@@ -67,12 +67,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .getBody();
 
             String username = claims.getSubject();
-            String stored   = refreshTokenStore.get(username);
+            String stored = refreshTokenStore.get(username);
             if (stored == null || !stored.equals(providedRefreshToken)) {
                 throw new BadCredentialsException("Refresh token is invalid or expired");
             }
 
-            String newAccess  = generateToken(username, jwtProperties.getExpiration());
+            String newAccess = generateToken(username, jwtProperties.getExpiration());
             String newRefresh = generateToken(username, jwtProperties.getRefreshTokenExpiration());
 
             refreshTokenStore.put(username, newRefresh);
@@ -102,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private String generateToken(String subject, long validityMillis) {
-        Date now    = new Date();
+        Date now = new Date();
         Date expiry = new Date(now.getTime() + validityMillis);
 
         return Jwts.builder()

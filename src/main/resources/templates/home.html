@@ -16,6 +16,10 @@
         }
 
 
+
+
+
+
     </style>
 </head>
 <body>
@@ -260,15 +264,18 @@
 
                             <dt class="col-sm-4" th:text="#{voucher.filter.tourType}">Tour Type:</dt>
                             <dd class="col-sm-8"
-                                th:text="${#messages.msg('tourType.' + voucher.tourType)}">Health</dd>
+                                th:text="${#messages.msg('tourType.' + voucher.tourType)}">Health
+                            </dd>
 
                             <dt class="col-sm-4" th:text="#{voucher.filter.transferType}">Transfer Type:</dt>
                             <dd class="col-sm-8"
-                                th:text="${#messages.msg('transferType.' + voucher.transferType)}">Bus</dd>
+                                th:text="${#messages.msg('transferType.' + voucher.transferType)}">Bus
+                            </dd>
 
                             <dt class="col-sm-4" th:text="#{voucher.filter.hotelType}">Hotel Type:</dt>
                             <dd class="col-sm-8"
-                                th:text="${#messages.msg('hotelType.' + voucher.hotelType)}">Three Stars</dd>
+                                th:text="${#messages.msg('hotelType.' + voucher.hotelType)}">Three Stars
+                            </dd>
 
                         </dl>
                     </div>

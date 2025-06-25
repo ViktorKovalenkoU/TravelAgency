@@ -32,7 +32,7 @@ public class AdminController {
 
     @GetMapping
     public String panelAdmin(
-            @RequestParam(value="lang", defaultValue="en") String lang,
+            @RequestParam(value = "lang", defaultValue = "en") String lang,
             Model model
     ) {
         model.addAttribute("vouchers", voucherService.findAll(lang));
@@ -47,7 +47,7 @@ public class AdminController {
     @PostMapping("/users/{id}/block")
     public String block(
             @PathVariable("id") UUID id,
-            @RequestParam(value="lang", defaultValue="en") String lang,
+            @RequestParam(value = "lang", defaultValue = "en") String lang,
             RedirectAttributes ra
     ) {
         adminService.blockUser(id);
@@ -58,7 +58,7 @@ public class AdminController {
     @PostMapping("/users/{id}/unblock")
     public String unblock(
             @PathVariable("id") UUID id,
-            @RequestParam(value="lang", defaultValue="en") String lang,
+            @RequestParam(value = "lang", defaultValue = "en") String lang,
             RedirectAttributes ra
     ) {
         adminService.unblockUser(id);
