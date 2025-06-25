@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource(properties = "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect")
 class ApplicationTests {
 
-  @Test
-  void contextLoads() {
-  }
+    @Test
+    void contextLoads() {
+    }
 }

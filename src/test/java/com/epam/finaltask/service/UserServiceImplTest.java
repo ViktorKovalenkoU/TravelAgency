@@ -26,99 +26,99 @@ import com.epam.finaltask.repository.UserRepository;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
-  @Mock
-  private UserRepository userRepository;
+    @Mock
+    private UserRepository userRepository;
 
-  @Mock
-  private PasswordEncoder passwordEncoder;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
-  @Mock
-  private UserMapper userMapper;
+    @Mock
+    private UserMapper userMapper;
 
-  @InjectMocks
-  private UserServiceImpl userService;
+    @InjectMocks
+    private UserServiceImpl userService;
 
-  @Test
-  void getUserByUsername_UserExists_Success() {
-    // Given
-    String username = "existingUser";
-    User user = new User();
-    user.setUsername(username);
+    @Test
+    void getUserByUsername_UserExists_Success() {
+        // Given
+        String username = "existingUser";
+        User user = new User();
+        user.setUsername(username);
 
-    UserDTO expectedUserDTO = new UserDTO();
-    expectedUserDTO.setUsername(username);
+        UserDTO expectedUserDTO = new UserDTO();
+        expectedUserDTO.setUsername(username);
 
-    when(userRepository.findUserByUsername(username)).thenReturn(Optional.of(user));
-    when(userMapper.toUserDTO(any(User.class))).thenReturn(expectedUserDTO);
+        when(userRepository.findUserByUsername(username)).thenReturn(Optional.of(user));
+        when(userMapper.toUserDTO(any(User.class))).thenReturn(expectedUserDTO);
 
-    // When
-    UserDTO result = userService.getUserByUsername(username);
+        // When
+        UserDTO result = userService.getUserByUsername(username);
 
-    // Then
-    assertNotNull(result, "The returned UserDTO should not be null");
-    assertEquals(expectedUserDTO.getUsername(), result.getUsername(),
-        "The username should match the expected value");
+        // Then
+        assertNotNull(result, "The returned UserDTO should not be null");
+        assertEquals(expectedUserDTO.getUsername(), result.getUsername(),
+                "The username should match the expected value");
 
-    verify(userRepository, times(1)).findUserByUsername(username);
-    verify(userMapper, times(1)).toUserDTO(any(User.class));
-  }
+        verify(userRepository, times(1)).findUserByUsername(username);
+        verify(userMapper, times(1)).toUserDTO(any(User.class));
+    }
 
-  @Test
-  void changeAccountStatus_UserExist_Success() {
-    // Given
-    String userId = UUID.randomUUID().toString();
-    UserDTO userDTO = new UserDTO();
-    userDTO.setId(UUID.fromString(userId));
-    userDTO.setActive(true);
+    @Test
+    void changeAccountStatus_UserExist_Success() {
+        // Given
+        String userId = UUID.randomUUID().toString();
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(UUID.fromString(userId));
+        userDTO.setActive(true);
 
-    User user = new User();
-    user.setId(UUID.fromString(userId));
-    user.setActive(false);
+        User user = new User();
+        user.setId(UUID.fromString(userId));
+        user.setActive(false);
 
-    User updatedUser = new User();
-    updatedUser.setId(UUID.fromString(userId));
-    updatedUser.setActive(true);
+        User updatedUser = new User();
+        updatedUser.setId(UUID.fromString(userId));
+        updatedUser.setActive(true);
 
-    when(userRepository.findById(UUID.fromString(userId))).thenReturn(Optional.of(user));
-    when(userMapper.toUser(any(UserDTO.class))).thenReturn(updatedUser);
-    when(userRepository.save(any(User.class))).thenReturn(updatedUser);
-    when(userMapper.toUserDTO(any(User.class))).thenReturn(userDTO);
+        when(userRepository.findById(UUID.fromString(userId))).thenReturn(Optional.of(user));
+        when(userMapper.toUser(any(UserDTO.class))).thenReturn(updatedUser);
+        when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+        when(userMapper.toUserDTO(any(User.class))).thenReturn(userDTO);
 
-    // When
-    UserDTO resultDTO = userService.changeAccountStatus(userDTO);
+        // When
+        UserDTO resultDTO = userService.changeAccountStatus(userDTO);
 
-    // Then
-    assertNotNull(resultDTO, "The returned UserDTO should not be null");
-    assertTrue(resultDTO.isActive(), "The account status should be updated to true");
+        // Then
+        assertNotNull(resultDTO, "The returned UserDTO should not be null");
+        assertTrue(resultDTO.isActive(), "The account status should be updated to true");
 
-    verify(userRepository, times(1)).findById(UUID.fromString(userId));
-    verify(userRepository, times(1)).save(any(User.class));
-  }
+        verify(userRepository, times(1)).findById(UUID.fromString(userId));
+        verify(userRepository, times(1)).save(any(User.class));
+    }
 
 
-  @Test
-  void getUserById_UserExist_Success() {
-    // Given
-    UUID id = UUID.randomUUID();
-    User user = new User();
-    user.setId(id);
+    @Test
+    void getUserById_UserExist_Success() {
+        // Given
+        UUID id = UUID.randomUUID();
+        User user = new User();
+        user.setId(id);
 
-    UserDTO expectedUserDTO = new UserDTO();
-    expectedUserDTO.setId(UUID.fromString(id.toString()));
+        UserDTO expectedUserDTO = new UserDTO();
+        expectedUserDTO.setId(UUID.fromString(id.toString()));
 
-    when(userRepository.findById(id)).thenReturn(Optional.of(user));
-    when(userMapper.toUserDTO(any(User.class))).thenReturn(expectedUserDTO);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userMapper.toUserDTO(any(User.class))).thenReturn(expectedUserDTO);
 
-    // When
-    UserDTO resultDTO = userService.getUserById(id);
+        // When
+        UserDTO resultDTO = userService.getUserById(id);
 
-    // Then
-    assertNotNull(resultDTO, "The returned UserDTO should not be null");
-    assertEquals(expectedUserDTO.getId(), resultDTO.getId(),
-        "The user ID should match the expected value");
+        // Then
+        assertNotNull(resultDTO, "The returned UserDTO should not be null");
+        assertEquals(expectedUserDTO.getId(), resultDTO.getId(),
+                "The user ID should match the expected value");
 
-    verify(userRepository, times(1)).findById(id);
-    verify(userMapper, times(1)).toUserDTO(any(User.class));
-  }
+        verify(userRepository, times(1)).findById(id);
+        verify(userMapper, times(1)).toUserDTO(any(User.class));
+    }
 
 }

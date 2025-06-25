@@ -18,22 +18,27 @@
 
 <div class="auth-container">
     <h2 class="text-center mb-4" th:text="#{sign.in.header}">Sign In</h2>
-    <div class="alert alert-danger" th:if="${param.error}" th:text="#{error.default.message}">
+    <div class="alert alert-danger"
+         th:if="${param.error}"
+         th:text="#{error.default.message}">
         Invalid credentials
     </div>
     <form th:action="@{/auth/login}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <input type="hidden"
+               th:if="${_csrf != null}"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"/>
 
         <div class="mb-3">
             <label for="username" class="form-label" th:text="#{username.label}">Username</label>
-            <input type="text" id="username" name="username" class="form-control" placeholder="Enter username"
-                   required/>
+            <input type="text" id="username" name="username" class="form-control"
+                   placeholder="Enter username" required/>
         </div>
 
         <div class="mb-3">
             <label for="password" class="form-label" th:text="#{password.label}">Password</label>
-            <input type="password" id="password" name="password" class="form-control" placeholder="Enter password"
-                   required/>
+            <input type="password" id="password" name="password" class="form-control"
+                   placeholder="Enter password" required/>
         </div>
 
         <button type="submit" class="btn-submit" th:text="#{button.submit}">Submit</button>
