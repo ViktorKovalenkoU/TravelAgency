@@ -1,7 +1,6 @@
 package com.epam.finaltask.controller;
 
-import com.epam.finaltask.model.Role;
-import com.epam.finaltask.model.VoucherStatus;
+import com.epam.finaltask.model.*;
 import com.epam.finaltask.service.AdminService;
 import com.epam.finaltask.service.UserService;
 import com.epam.finaltask.service.VoucherService;
@@ -13,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -39,7 +37,9 @@ public class AdminController {
     ) {
         model.addAttribute("vouchers", voucherService.findAll(lang));
         model.addAttribute("allStatuses", VoucherStatus.values());
-
+        model.addAttribute("allTourTypes", TourType.values());
+        model.addAttribute("allTransferTypes", TransferType.values());
+        model.addAttribute("allHotelTypes", HotelType.values());
         model.addAttribute("users", adminService.findAllUsers());
         return "admin";
     }

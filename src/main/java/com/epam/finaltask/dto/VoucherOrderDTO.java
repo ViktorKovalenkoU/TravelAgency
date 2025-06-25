@@ -15,7 +15,6 @@ public class VoucherOrderDTO {
 
     private String voucherId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderDate;
 
     private String orderStatus;
@@ -24,10 +23,8 @@ public class VoucherOrderDTO {
 
     private String voucherTitle;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate voucherArrivalDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate voucherEvictionDate;
 
     private String userFullName;

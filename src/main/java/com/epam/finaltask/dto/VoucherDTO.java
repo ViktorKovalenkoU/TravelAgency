@@ -32,7 +32,7 @@ public class VoucherDTO {
 
     private boolean availableForPurchase;
 
-    private UUID userId;
+    private String userId;
 
     private boolean isHot;
 }

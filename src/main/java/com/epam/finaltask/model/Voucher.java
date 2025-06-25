@@ -2,6 +2,7 @@ package com.epam.finaltask.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Data
+@ToString(exclude = {"user", "translations"})
 @Table(name = "vouchers")
 public class Voucher {
 
