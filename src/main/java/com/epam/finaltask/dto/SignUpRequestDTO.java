@@ -10,30 +10,30 @@ import jakarta.validation.constraints.Size;
 @Data
 public class SignUpRequestDTO {
 
-    @NotEmpty(message = "{username.required}")
+    @NotEmpty(message = "username.required")
     private String username;
 
-    @NotEmpty(message = "{firstName.required}")
+    @NotEmpty(message = "firstName.required")
     private String firstName;
 
-    @NotEmpty(message = "{lastName.required}")
+    @NotEmpty(message = "lastName.required")
     private String lastName;
 
-    @NotEmpty(message = "{password.required}")
-    @Size(min = 6, message = "{password.size}")
+    @NotEmpty(message = "password.required")
+    @Size(min = 6, message = "password.size")
     private String password;
 
-    @NotEmpty(message = "{password.confirm.required}")
+    @NotEmpty(message = "password.confirm.required")
     private String confirmPassword;
 
-    @NotEmpty(message = "{email.required}")
-    @Email(message = "{email.invalid}")
+    @NotEmpty(message = "email.required")
+    @Email(message = "email.invalid")
     private String email;
 
-    @NotEmpty(message = "{phone.required}")
+    @NotEmpty(message = "phone.required")
     @Pattern(
             regexp = "\\+?[0-9\\- ]{7,15}",
-            message = "{phone.invalid}"
+            message = "phone.invalid"
     )
     private String phoneNumber;
 }

@@ -56,7 +56,6 @@ public class SecurityConfig {
                                 "/", "/auth/sign-in", "/auth/sign-up",
                                 "/css/**", "/js/**", "/img/**",
                                 "/h2-console/**", "/error",
-                                // додаємо OpenAPI & Swagger
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",

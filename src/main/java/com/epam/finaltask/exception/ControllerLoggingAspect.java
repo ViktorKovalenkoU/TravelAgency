@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller;
+package com.epam.finaltask.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
