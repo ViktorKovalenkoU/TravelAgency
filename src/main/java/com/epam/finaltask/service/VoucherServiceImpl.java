@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -223,56 +226,36 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public List<VoucherDTO> findAll(String locale) {
-        logger.debug("Getting list of vouchers for locale: {}", locale);
-
-        List<Voucher> vouchers = voucherRepository.findAll();
-
-        vouchers.sort((v1, v2) -> {
-            int hotCompare = Boolean.compare(v2.isHot(), v1.isHot());
-            if (hotCompare != 0) {
-                return hotCompare;
-            }
-            return v1.getArrivalDate().compareTo(v2.getArrivalDate());
-        });
-
-        List<VoucherDTO> dtos = vouchers.stream()
-                .map(v -> {
-                    VoucherDTO dto = new VoucherDTO();
-                    dto.setId(v.getId().toString());
-
-                    VoucherTranslation tr = v.getTranslations().stream()
-                            .filter(t -> t.getLocale().equalsIgnoreCase(locale))
-                            .findFirst()
-                            .orElse(null);
-                    if (tr != null) {
-                        dto.setTitle(tr.getTitle());
-                        dto.setDescription(tr.getDescription());
-                    } else {
-                        dto.setTitle(v.getTitle());
-                        dto.setDescription(v.getDescription());
-                    }
-
-                    dto.setPrice(v.getPrice());
-                    dto.setStatus(v.getStatus().name());
-                    dto.setTourType(v.getTourType() != null ? v.getTourType().name() : null);
-                    dto.setTransferType(v.getTransferType() != null ? v.getTransferType().name() : null);
-                    dto.setHotelType(v.getHotelType() != null ? v.getHotelType().name() : null);
-                    dto.setArrivalDate(v.getArrivalDate());
-                    dto.setEvictionDate(v.getEvictionDate());
-                    dto.setUserId(v.getUser() != null ? String.valueOf(v.getUser().getId()) : null);
-                    dto.setHot(v.isHot());
-
-                    boolean avail = v.isAvailableForPurchase();
-                    dto.setAvailable(avail);
-                    dto.setAvailableForPurchase(avail);
-
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
-        logger.debug("Voucher list generated, size: {}", dtos.size());
-        return dtos;
+        Page<VoucherDTO> page = findAll(Pageable.unpaged(), locale);
+        return page.getContent();
     }
+
+    @Override
+    public Page<VoucherDTO> findAll(Pageable pageable, String locale) {
+        Sort defaultSort = Sort.by(
+                Sort.Order.desc("hot"),
+                Sort.Order.asc("arrivalDate")
+        );
+
+        Pageable effective = pageable.isUnpaged()
+                ? PageRequest.of(0, Integer.MAX_VALUE, defaultSort)
+                : (pageable.getSort().isSorted()
+                ? pageable
+                : PageRequest.of(pageable.getPageNumber(),
+                pageable.getPageSize(),
+                defaultSort));
+
+        Page<Voucher> entityPage = voucherRepository.findAll(effective);
+
+        return entityPage.map(v -> {
+            VoucherDTO dto = voucherMapper.toVoucherDTO(v, locale);
+            boolean avail = v.isAvailableForPurchase();
+            dto.setAvailable(avail);
+            dto.setAvailableForPurchase(avail);
+            return dto;
+        });
+    }
+
 
     @Override
     public List<VoucherDTO> findAllByFilter(VoucherFilterRequest filter, String locale) {

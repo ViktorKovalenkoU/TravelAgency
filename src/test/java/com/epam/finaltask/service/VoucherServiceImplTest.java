@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -77,6 +78,29 @@ class VoucherServiceImplTest {
 
         user = new User();
         user.setUsername("bobRoss");
+    }
+
+    @Test
+    @DisplayName("findAll(String locale) → uses unpaged(Pageable) & default sort")
+    void findAll_DefaultUnpaged_Success() {
+        Sort defaultSort = Sort.by(
+                Sort.Order.desc("hot"),
+                Sort.Order.asc("arrivalDate")
+        );
+        Pageable unpaged = PageRequest.of(0, Integer.MAX_VALUE, defaultSort);
+
+        Page<Voucher> pageEnt = new PageImpl<>(List.of(voucher), unpaged, 1);
+        given(voucherRepository.findAll(unpaged)).willReturn(pageEnt);
+        given(voucherMapper.toVoucherDTO(voucher, "en")).willReturn(dto);
+
+        List<VoucherDTO> result = service.findAll("en");
+
+        assertThat(result)
+                .hasSize(1)
+                .containsExactly(dto);
+
+        then(voucherRepository).should().findAll(unpaged);
+        then(voucherMapper).should().toVoucherDTO(voucher, "en");
     }
 
 

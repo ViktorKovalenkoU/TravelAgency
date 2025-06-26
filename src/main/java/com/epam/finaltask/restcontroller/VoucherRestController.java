@@ -5,8 +5,13 @@ import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.model.TourType;
 import com.epam.finaltask.model.TransferType;
 import com.epam.finaltask.model.HotelType;
+import com.epam.finaltask.paged.PagedResponse;
 import com.epam.finaltask.service.VoucherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +27,28 @@ public class VoucherRestController {
     private final VoucherService voucherService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<VoucherDTO>>> getAllVouchers(
+    public ResponseEntity<ApiResponse<PagedResponse<VoucherDTO>>> getAllVouchers(
+            @PageableDefault(size = Integer.MAX_VALUE) Pageable pageable,
             @RequestHeader(name = "Accept-Language", defaultValue = "en") String locale) {
-        List<VoucherDTO> vouchers = voucherService.findAll(locale);
-        ApiResponse<List<VoucherDTO>> response =
-                new ApiResponse<>("OK", "Vouchers retrieved successfully", vouchers);
-        return ResponseEntity.ok(response);
+
+        Page<VoucherDTO> page = voucherService.findAll(pageable, locale);
+
+        PagedResponse<VoucherDTO> paged = new PagedResponse<>(page);
+
+        ApiResponse<PagedResponse<VoucherDTO>> response =
+                new ApiResponse<>(
+                        "OK",
+                        "Vouchers retrieved successfully",
+                        paged
+                );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", String.valueOf(page.getTotalElements()));
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(response);
     }
+
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<VoucherDTO>>> getVouchersByUserId(

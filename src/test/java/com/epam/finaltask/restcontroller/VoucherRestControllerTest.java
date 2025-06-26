@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,24 +41,34 @@ class VoucherRestControllerTest {
     @MockBean
     private VoucherService voucherService;
 
+
     @Test
-    @DisplayName("GET /api/vouchers → 200 OK with list of vouchers")
-    void shouldGetAllVouchers() throws Exception {
+    @DisplayName("GET /api/vouchers → 200 OK with paged vouchers")
+    void shouldGetAllVouchersWithPagination() throws Exception {
         VoucherDTO dto = new VoucherDTO();
         dto.setId(UUID.randomUUID().toString());
-        given(voucherService.findAll("en")).willReturn(List.of(dto));
+
+        Pageable anyPageable = Pageable.unpaged();
+        Page<VoucherDTO> page = new PageImpl<>(List.of(dto), anyPageable, 1);
+
+        given(voucherService.findAll(any(Pageable.class), eq("en"))).willReturn(page);
 
         mockMvc.perform(get("/api/vouchers")
                         .header("Accept-Language", "en")
-                        .accept(MediaType.APPLICATION_JSON)
-                )
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value("OK"))
-                .andExpect(jsonPath("$.statusMessage").value("Vouchers retrieved successfully"))
-                .andExpect(jsonPath("$.results", hasSize(1)))
-                .andExpect(jsonPath("$.results[0].id").value(dto.getId()));
 
-        then(voucherService).should().findAll("en");
+                .andExpect(header().string("X-Total-Count", "1"))
+
+                .andExpect(jsonPath("$.statusCode").value("OK"))
+                .andExpect(jsonPath("$.statusMessage")
+                        .value("Vouchers retrieved successfully"))
+
+                .andExpect(jsonPath("$.results.content", hasSize(1)))
+                .andExpect(jsonPath("$.results.content[0].id")
+                        .value(dto.getId()));
+
+        then(voucherService).should().findAll(any(Pageable.class), eq("en"));
     }
 
     @Test
