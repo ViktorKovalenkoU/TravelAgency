@@ -15,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -230,24 +227,32 @@ public class VoucherServiceImpl implements VoucherService {
         return page.getContent();
     }
 
+
     @Override
     public Page<VoucherDTO> findAll(Pageable pageable, String locale) {
-        Sort defaultSort = Sort.by(
-                Sort.Order.desc("hot"),
-                Sort.Order.asc("arrivalDate")
-        );
+        if (pageable.isUnpaged()) {
+            List<Voucher> all = voucherRepository.findAll();
+            all.sort((v1, v2) -> {
+                int hotCmp = Boolean.compare(v2.isHot(), v1.isHot());
+                if (hotCmp != 0) return hotCmp;
+                return v1.getArrivalDate().compareTo(v2.getArrivalDate());
+            });
 
-        Pageable effective = pageable.isUnpaged()
-                ? PageRequest.of(0, Integer.MAX_VALUE, defaultSort)
-                : (pageable.getSort().isSorted()
-                ? pageable
-                : PageRequest.of(pageable.getPageNumber(),
-                pageable.getPageSize(),
-                defaultSort));
+            List<VoucherDTO> dtos = all.stream()
+                    .map(v -> {
+                        VoucherDTO dto = voucherMapper.toVoucherDTO(v, locale);
+                        boolean avail = v.isAvailableForPurchase();
+                        dto.setAvailable(avail);
+                        dto.setAvailableForPurchase(avail);
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
 
-        Page<Voucher> entityPage = voucherRepository.findAll(effective);
+            return new PageImpl<>(dtos, pageable, dtos.size());
+        }
 
-        return entityPage.map(v -> {
+        Page<Voucher> page = voucherRepository.findAll(pageable);
+        return page.map(v -> {
             VoucherDTO dto = voucherMapper.toVoucherDTO(v, locale);
             boolean avail = v.isAvailableForPurchase();
             dto.setAvailable(avail);

@@ -18,7 +18,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder          passwordEncoder;
     private final CustomAuthenticationFailureHandler failureHandler;
     private final CustomAuthenticationSuccessHandler successHandler;
 
@@ -33,12 +33,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            DaoAuthenticationProvider authProvider) throws Exception {
+
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .ignoringRequestMatchers(
                                 new AntPathRequestMatcher("/h2-console/**"),
-                                new AntPathRequestMatcher("/api/**")
+                                new AntPathRequestMatcher("/api/**"),
+                                new AntPathRequestMatcher("/v3/api-docs/**"),
+                                new AntPathRequestMatcher("/swagger-ui.html"),
+                                new AntPathRequestMatcher("/swagger-ui/**"),
+                                new AntPathRequestMatcher("/webjars/**")
                         )
                 )
 
@@ -50,8 +55,14 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/auth/sign-in", "/auth/sign-up",
                                 "/css/**", "/js/**", "/img/**",
-                                "/h2-console/**", "/error"
+                                "/h2-console/**", "/error",
+                                // додаємо OpenAPI & Swagger
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/webjars/**"
                         ).permitAll()
+
                         .anyRequest().authenticated()
                 )
 
@@ -62,7 +73,6 @@ public class SecurityConfig {
                         .successHandler(successHandler)
                         .permitAll()
                 )
-
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/")
