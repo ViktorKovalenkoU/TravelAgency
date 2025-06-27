@@ -23,6 +23,7 @@
          th:text="#{error.default.message}">
         Invalid credentials
     </div>
+
     <form th:action="@{/auth/login}" method="post">
         <input type="hidden"
                th:if="${_csrf != null}"
@@ -44,8 +45,13 @@
         <button type="submit" class="btn-submit" th:text="#{button.submit}">Submit</button>
     </form>
 
-    <div style="margin-top: 1rem;">
-        <a class="btn btn-register" th:href="@{/auth/sign-up}" th:text="#{button.register}">Register</a>
+    <div class="mt-3">
+        <a class="btn btn-link"
+           th:href="@{/auth/forgot-password}"
+           th:text="#{link.forgotPassword}">Forgot password?</a>
+        <a class="btn btn-register"
+           th:href="@{/auth/sign-up}"
+           th:text="#{button.register}">Register</a>
     </div>
 </div>
 

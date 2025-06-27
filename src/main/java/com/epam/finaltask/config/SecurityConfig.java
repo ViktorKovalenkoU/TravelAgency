@@ -17,10 +17,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
-    private final PasswordEncoder          passwordEncoder;
-    private final CustomAuthenticationFailureHandler failureHandler;
-    private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomUserDetailsService               userDetailsService;
+    private final PasswordEncoder                        passwordEncoder;
+    private final CustomAuthenticationFailureHandler     failureHandler;
+    private final CustomAuthenticationSuccessHandler     successHandler;
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
@@ -32,7 +32,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-                                           DaoAuthenticationProvider authProvider) throws Exception {
+                                           DaoAuthenticationProvider authProvider)
+            throws Exception {
 
         http
                 .csrf(csrf -> csrf
@@ -44,27 +45,33 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/swagger-ui.html"),
                                 new AntPathRequestMatcher("/swagger-ui/**"),
                                 new AntPathRequestMatcher("/webjars/**")
+
                         )
                 )
-
                 .headers(headers -> headers
                         .frameOptions(frameOpts -> frameOpts.sameOrigin())
                 )
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/auth/sign-in", "/auth/sign-up",
-                                "/css/**", "/js/**", "/img/**",
-                                "/h2-console/**", "/error",
+                                "/",
+                                "/auth/sign-in",
+                                "/auth/sign-up",
+                                "/auth/forgot-password",
+                                "/auth/forgot-password/**",
+                                "/auth/reset-password",
+                                "/auth/reset-password/**",
+                                "/css/**",
+                                "/js/**",
+                                "/img/**",
+                                "/h2-console/**",
+                                "/error",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/webjars/**"
                         ).permitAll()
-
                         .anyRequest().authenticated()
                 )
-
                 .formLogin(form -> form
                         .loginPage("/auth/sign-in")
                         .loginProcessingUrl("/auth/login")
@@ -77,7 +84,6 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
-
                 .authenticationProvider(authProvider);
 
         return http.build();
