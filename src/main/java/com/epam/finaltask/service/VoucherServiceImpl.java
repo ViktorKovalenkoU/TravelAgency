@@ -230,24 +230,22 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     public Page<VoucherDTO> findAll(Pageable pageable, String locale) {
         Sort defaultSort = Sort.by(
-                Sort.Order.desc("hot"),
+                Sort.Order.desc("isHot"),
                 Sort.Order.asc("arrivalDate")
         );
 
         if (pageable.isUnpaged()) {
-            Pageable unpagedWithSort = PageRequest.of(
+            pageable = PageRequest.of(
                     0,
                     Integer.MAX_VALUE,
                     defaultSort
             );
-            Page<Voucher> page = voucherRepository.findAll(unpagedWithSort);
-            return page.map(v -> {
-                VoucherDTO dto = voucherMapper.toVoucherDTO(v, locale);
-                boolean avail = v.isAvailableForPurchase();
-                dto.setAvailable(avail);
-                dto.setAvailableForPurchase(avail);
-                return dto;
-            });
+        } else if (!pageable.getSort().isSorted()) {
+            pageable = PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
+                    defaultSort
+            );
         }
 
         Page<Voucher> page = voucherRepository.findAll(pageable);

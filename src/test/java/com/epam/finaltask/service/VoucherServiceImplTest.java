@@ -84,7 +84,7 @@ class VoucherServiceImplTest {
     @DisplayName("findAll(String locale) → uses unpaged(Pageable) & default sort")
     void findAll_DefaultUnpaged_Success() {
         Sort defaultSort = Sort.by(
-                Sort.Order.desc("hot"),
+                Sort.Order.desc("isHot"),
                 Sort.Order.asc("arrivalDate")
         );
         Pageable unpaged = PageRequest.of(0, Integer.MAX_VALUE, defaultSort);
