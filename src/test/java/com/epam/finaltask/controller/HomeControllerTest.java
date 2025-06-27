@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -36,8 +39,11 @@ class HomeControllerTest {
     @Test
     @DisplayName("GET / should render home with default lang and empty filter")
     void shouldRenderHomeWithDefaultLang() throws Exception {
-        given(voucherService.findAllByFilter(any(VoucherFilterRequest.class), eq("en")))
-                .willReturn(Collections.emptyList());
+        given(voucherService.findAllByFilter(
+                any(VoucherFilterRequest.class),
+                any(Pageable.class),
+                eq("en"))
+        ).willReturn(new PageImpl<>(Collections.emptyList()));
 
         mockMvc.perform(get("/").locale(Locale.ENGLISH))
                 .andExpect(status().isOk())
@@ -47,7 +53,9 @@ class HomeControllerTest {
                 .andExpect(model().attribute("lang", "en"));
 
         then(voucherService).should()
-                .findAllByFilter(any(VoucherFilterRequest.class), eq("en"));
+                .findAllByFilter(any(VoucherFilterRequest.class),
+                        any(Pageable.class),
+                        eq("en"));
     }
 
     @Test
@@ -55,8 +63,12 @@ class HomeControllerTest {
     void shouldRenderHomeWithLangAndFilter() throws Exception {
         VoucherDTO voucher = new VoucherDTO();
         voucher.setId(UUID.randomUUID().toString());
-        given(voucherService.findAllByFilter(any(VoucherFilterRequest.class), eq("en")))
-                .willReturn(Collections.singletonList(voucher));
+
+        given(voucherService.findAllByFilter(
+                any(VoucherFilterRequest.class),
+                any(Pageable.class),
+                eq("en"))
+        ).willReturn(new PageImpl<>(List.of(voucher)));
 
         mockMvc.perform(get("/home")
                         .param("lang", "en")
@@ -70,6 +82,8 @@ class HomeControllerTest {
                 .andExpect(model().attribute("lang", "en"));
 
         then(voucherService).should()
-                .findAllByFilter(any(VoucherFilterRequest.class), eq("en"));
+                .findAllByFilter(any(VoucherFilterRequest.class),
+                        any(Pageable.class),
+                        eq("en"));
     }
 }

@@ -1,29 +1,32 @@
 package com.epam.finaltask.controller;
 
+import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.model.*;
-import com.epam.finaltask.service.AdminService;
-import com.epam.finaltask.service.UserService;
-import com.epam.finaltask.service.VoucherService;
+import com.epam.finaltask.paged.PagedResponse;
+import com.epam.finaltask.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Controller
-@Slf4j
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
+@Slf4j
 public class AdminController {
 
     private final VoucherService voucherService;
-    private final AdminService adminService;
-    private final UserService userService;
+    private final AdminService   adminService;
+    private final UserService    userService;
 
     @ModelAttribute("roles")
     public Role[] allRoles() {
@@ -33,16 +36,34 @@ public class AdminController {
     @GetMapping
     public String panelAdmin(
             @RequestParam(value = "lang", defaultValue = "en") String lang,
-            Model model
-    ) {
-        model.addAttribute("vouchers", voucherService.findAll(lang));
-        model.addAttribute("allStatuses", VoucherStatus.values());
-        model.addAttribute("allTourTypes", TourType.values());
+            @RequestParam(value = "page", defaultValue = "0")    int page,
+            @RequestParam(value = "size", defaultValue = "10")   int size,
+            Locale locale,
+            Model model) {
+
+        String language = (lang != null) ? lang : locale.getLanguage();
+
+        // сортування по isHot (поле в ентіті) та arrivalDate
+        Sort sort = Sort.by("isHot").descending()
+                .and(Sort.by("arrivalDate").ascending());
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<VoucherDTO> pageResult = voucherService.findAll(pageable, language);
+        PagedResponse<VoucherDTO> paged     = new PagedResponse<>(pageResult);
+        List<VoucherDTO> vouchers           = pageResult.getContent();
+
+        model.addAttribute("pagedVouchers",   paged);
+        model.addAttribute("vouchers",        vouchers);
+        model.addAttribute("lang",            language);
+        model.addAttribute("allStatuses",     VoucherStatus.values());
+        model.addAttribute("allTourTypes",    TourType.values());
         model.addAttribute("allTransferTypes", TransferType.values());
-        model.addAttribute("allHotelTypes", HotelType.values());
-        model.addAttribute("users", adminService.findAllUsers());
+        model.addAttribute("allHotelTypes",    HotelType.values());
+        model.addAttribute("users",            adminService.findAllUsers());
+
         return "admin";
     }
+
 
     @PostMapping("/users/{id}/block")
     public String block(

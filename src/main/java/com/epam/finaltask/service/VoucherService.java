@@ -41,4 +41,7 @@ public interface VoucherService {
 
     Page<VoucherDTO> findAll(Pageable pageable, String locale);
 
+    Page<VoucherDTO> findAllByFilter(VoucherFilterRequest filter,
+                                     Pageable pageable,
+                                     String locale);
 }

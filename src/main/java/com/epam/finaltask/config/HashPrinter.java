@@ -1,4 +1,3 @@
-/*
 package com.epam.finaltask.config;
 
 import lombok.RequiredArgsConstructor;
@@ -16,4 +15,4 @@ public class HashPrinter implements CommandLineRunner {
     public void run(String... args) {
         System.out.println("bcrypt(121212) = " + encoder.encode("121212"));
     }
-}*/
+}

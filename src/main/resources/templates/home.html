@@ -223,9 +223,9 @@
     </h2>
 
     <div class="row row-cols-1 row-cols-md-2 g-4 align-items-start"
-         th:if="${vouchers != null and !#lists.isEmpty(vouchers)}">
+         th:if="${pagedVouchers.content != null and !#lists.isEmpty(pagedVouchers.content)}">
 
-        <div class="col" th:each="voucher : ${vouchers}">
+        <div class="col" th:each="voucher : ${pagedVouchers.content}">
             <div class="card expandable-card shadow-sm"
                  th:id="'card-' + ${voucher.id}">
 
@@ -273,22 +273,19 @@
                             <dd class="col-sm-8"
                                 th:text="${#messages.msg('hotelType.' + voucher.hotelType)}">Three Stars
                             </dd>
-
                         </dl>
                     </div>
                 </div>
 
                 <div class="card-footer bg-transparent border-top-0">
                     <div class="d-flex justify-content-between align-items-center">
-
                         <button type="button"
                                 class="btn btn-outline-secondary btn-sm btn-review"
                                 data-bs-toggle="collapse"
                                 th:attr="data-bs-target=|#collapse-${voucher.id}|"
                                 th:attrappend="aria-controls=|collapse-${voucher.id}|"
                                 aria-expanded="false"
-                                th:text="#{button.view}">
-                            Review
+                                th:text="#{button.view}">Review
                         </button>
 
                         <a class="btn btn-success btn-sm"
@@ -298,8 +295,11 @@
 
                         <div sec:authorize="isAuthenticated()">
                             <div th:if="${voucher.available}">
-                                <form th:action="@{/vouchers/order}" method="post" class="d-inline">
-                                    <input type="hidden" name="voucherId" th:value="${voucher.id}"/>
+                                <form th:action="@{/vouchers/order}"
+                                      method="post"
+                                      class="d-inline">
+                                    <input type="hidden" name="voucherId"
+                                           th:value="${voucher.id}"/>
                                     <input type="hidden"
                                            th:name="${_csrf.parameterName}"
                                            th:value="${_csrf.token}"/>
@@ -317,16 +317,50 @@
                                 </button>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div th:if="${vouchers == null or #lists.isEmpty(vouchers)}" class="text-center">
+
+    <div th:if="${pagedVouchers.content == null or #lists.isEmpty(pagedVouchers.content)}"
+         class="text-center">
         <p th:text="#{voucher.catalog.empty}">
             No vouchers available at the moment.
         </p>
     </div>
+
+    <nav th:if="${pagedVouchers.totalPages > 1}"
+         aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item"
+                th:classappend="${pagedVouchers.page == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{'/'(lang=${lang}, page=${pagedVouchers.page - 1}, size=${pagedVouchers.size})}">
+                    &laquo; Prev
+                </a>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, pagedVouchers.totalPages - 1)}"
+                th:classappend="${i} == ${pagedVouchers.page} ? ' active'">
+                <a class="page-link"
+                   th:href="@{'/'(lang=${lang}, page=${i}, size=${pagedVouchers.size})}"
+                   th:text="${i + 1}">1</a>
+            </li>
+
+            <li class="page-item"
+                th:classappend="${pagedVouchers.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{'/'(lang=${lang}, page=${pagedVouchers.page + 1}, size=${pagedVouchers.size})}">
+                    Next &raquo;
+                </a>
+            </li>
+
+        </ul>
+    </nav>
 </div>
 
 <style>
