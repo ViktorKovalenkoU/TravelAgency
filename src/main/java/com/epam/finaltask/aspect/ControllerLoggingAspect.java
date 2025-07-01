@@ -1,4 +1,4 @@
-package com.epam.finaltask.exception;
+package com.epam.finaltask.aspect;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +21,12 @@ public class ControllerLoggingAspect {
 
     @Before("controllerPackage() && @annotation(requestMapping)")
     public void logBefore(JoinPoint jp, RequestMapping requestMapping) {
-        HttpServletRequest req =
-                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                        .getRequest();
+        ServletRequestAttributes attrs =
+                (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest req = attrs.getRequest();
 
         log.debug(
-                "[{} {}] → Enter {}.{}(), params: {}",
+                "[{} {}] >>> Enter {}.{}(), params: {}",
                 req.getMethod(),
                 req.getRequestURI(),
                 jp.getSignature().getDeclaringType().getSimpleName(),
@@ -38,7 +38,7 @@ public class ControllerLoggingAspect {
     @AfterReturning(pointcut = "controllerPackage()", returning = "ret")
     public void logAfter(JoinPoint jp, Object ret) {
         log.debug(
-                "{}.{}() → returned {}",
+                "{}.{}() >>> returned {}",
                 jp.getSignature().getDeclaringType().getSimpleName(),
                 jp.getSignature().getName(),
                 (ret != null ? ret.getClass().getSimpleName() : "null")
@@ -51,7 +51,8 @@ public class ControllerLoggingAspect {
                 "Exception in {}.{}(): {}",
                 jp.getSignature().getDeclaringType().getSimpleName(),
                 jp.getSignature().getName(),
-                ex.getMessage(), ex
+                ex.getMessage(),
+                ex
         );
     }
 }

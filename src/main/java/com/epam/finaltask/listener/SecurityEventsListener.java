@@ -1,9 +1,8 @@
-package com.epam.finaltask.config;
+package com.epam.finaltask.listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.*;
-import org.springframework.security.core.session.SessionDestroyedEvent;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,4 +1,4 @@
-package com.epam.finaltask.handler;
+package com.epam.finaltask.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,20 +16,22 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class GlobalRequestLoggingFilter extends OncePerRequestFilter {
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain)
+                                    FilterChain chain)
             throws ServletException, IOException {
-        log.debug("→ {} {}", request.getMethod(), request.getRequestURI());
+        String method = request.getMethod();
+        String uri    = request.getRequestURI();
+
+        log.info(">>> {} {}", method, uri);
         try {
-            filterChain.doFilter(request, response);
+            chain.doFilter(request, response);
         } catch (Exception ex) {
-            log.error("Exception processing {} {}:",
-                    request.getMethod(), request.getRequestURI(), ex);
+            log.error(">< Exception processing {} {}:", method, uri, ex);
             throw ex;
         }
-        log.debug("← {} {} → status={}",
-                request.getMethod(), request.getRequestURI(), response.getStatus());
+        log.info("<<< {} {} status={}", method, uri, response.getStatus());
     }
 }
